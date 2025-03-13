@@ -81,6 +81,17 @@ public class MapUtils {
 		map.put(key, value);
 		return map;
 	}
+
+	/**
+	 * 构建Map
+	 * <p>
+	 * 	含四对key-value
+	 * </p>
+	 *
+	 */
+	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2) {
+		return of(String.class, Object.class, key1, value1, key2, value2);
+	}
 	
 	/**
 	 * 构建包含两个键值对的泛型Map
@@ -104,7 +115,18 @@ public class MapUtils {
 		map.put(key2, value2);
 		return map;
 	}
-	
+
+	/**
+	 * 构建Map
+	 * <p>
+	 * 	含四对key-value
+	 * </p>
+	 *
+	 */
+	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2, String key3, Object value3) {
+		return of(String.class, Object.class, key1, value1, key2, value2, key3, value3);
+	}
+
 	/**
 	 * 构建包含三个键值对的泛型Map
 	 * <p>
