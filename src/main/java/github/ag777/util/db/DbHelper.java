@@ -875,13 +875,13 @@ public class DbHelper implements Closeable {
 	
 	/*-----数据库结构层面的工具方法-----*/
 	/**
-	 * 获取数据库信息
-	 * <p>
-	 * 参考:http://blog.csdn.net/anxinliu2011/article/details/7560511
-	 * </p>
-	 * 
-	 * @return DbPojo
-	 */
+     * 获取数据库信息
+     * <p>
+     * <a href="http://blog.csdn.net/anxinliu2011/article/details/7560511">参考</a>
+     * </p>
+     *
+     * @return DbPojo
+     */
 	public DbInfo dbInfo() throws SQLException {
 		DbInfo db = new DbInfo();
 		DatabaseMetaData dbmd = conn.getMetaData();
@@ -889,6 +889,30 @@ public class DbHelper implements Closeable {
 		db.setVersion(dbmd.getDatabaseProductVersion());	//5.6.32
 		db.setDriverVersion(dbmd.getDriverVersion());			//mysql-connector-java-5.1.44 ( Revision: b3cda4f864902ffdde495b9df93937c3e20009be )
 		return db;
+	}
+
+	/**
+	 *
+	 * @return 目录列表,对应mysql数据库的数据库名列表
+	 * @throws SQLException 异常
+	 */
+	public List<String> getCatalogs() throws SQLException {
+		DatabaseMetaData dbmd = conn.getMetaData();
+		ResultSet rs = dbmd.getCatalogs();
+		return convert2List(rs, String.class);
+	}
+
+	/**
+	 *
+	 * @param catalog 目录
+	 * @param schemaPattern 模式名匹配规则
+	 * @return 模式列表,对应mysql为空
+	 * @throws SQLException 执行异常
+	 */
+	public List<String> getSchemas(String catalog, String schemaPattern) throws SQLException {
+		DatabaseMetaData dbmd = conn.getMetaData();
+		ResultSet rs = dbmd.getSchemas(escape(catalog), escape(schemaPattern));
+		return convert2List(rs, String.class);
 	}
 
 	/**
@@ -925,29 +949,29 @@ public class DbHelper implements Closeable {
 	}
 
 	/**
-	 * 通过表名获取每一个字段的信息
-	 *
-	 * <p>
-	 * 	参考:http://blog.sina.com.cn/s/blog_707a9f0601014y1y.html
-	 * </p>
-	 *
-	 * @param tableName 表名
-	 * @return list
-	 */
+     * 通过表名获取每一个字段的信息
+     *
+     * <p>
+     * 	<a href="http://blog.sina.com.cn/s/blog_707a9f0601014y1y.html">参考</a>
+     * </p>
+     *
+     * @param tableName 表名
+     * @return list
+     */
 	public List<ColumnPojo> columnList(String tableName) throws SQLException {
 		return columnList(null, "%", tableName);
 	}
 
 	/**
-	 * 通过表名获取每一个字段的信息
-	 *
-	 * <p>
-	 * 	参考:http://blog.sina.com.cn/s/blog_707a9f0601014y1y.html
-	 * </p>
-	 *
-	 * @param tableName 表名
-	 * @return list
-	 */
+     * 通过表名获取每一个字段的信息
+     *
+     * <p>
+     * 	<a href="http://blog.sina.com.cn/s/blog_707a9f0601014y1y.html">参考</a>
+     * </p>
+     *
+     * @param tableName 表名
+     * @return list
+     */
 	public List<ColumnPojo> columnList(String catalog, String schema, String tableName) throws SQLException {
 		List<ColumnPojo> columns = new ArrayList<>();
 
