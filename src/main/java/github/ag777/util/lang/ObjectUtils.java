@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * @author ag777 <837915770@vip.qq.com>
- * @version 2025/2/5 下午3:45
+ * @version 2025/4/2 下午11:15
  */
 public class ObjectUtils {
     /**
@@ -128,6 +128,8 @@ public class ObjectUtils {
             return ((Double)obj).intValue();
         } else if (obj instanceof BigDecimal) {
             return ((BigDecimal) obj).intValue();
+        } else if (obj instanceof Boolean) {
+            return (Boolean) obj ? 1 : 0;
         }
 
         return StringUtils.toInt(obj.toString());
