@@ -158,7 +158,7 @@ public class ObjectUtils {
         if(obj instanceof Long) {
             return (Long) obj;
         } else if(obj instanceof Integer) {
-            return (long) obj;
+            return ((Integer) obj).longValue();
         } else if (obj instanceof Float) {
             return ((Float)obj).longValue();
         } else if (obj instanceof Double) {
