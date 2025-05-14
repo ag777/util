@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+import github.ag777.util.gson.adapter.LocalDateTimeAdapter;
 import github.ag777.util.gson.model.TypeFactory;
 import github.ag777.util.lang.exception.model.GsonSyntaxException;
 
@@ -180,6 +181,10 @@ public class GsonUtils {
 				.registerTypeAdapter(
 						new TypeToken<List<Object>>() {}.getType(), 
 						objAdapter
+				)
+				.registerTypeAdapter(
+						new TypeToken<java.time.LocalDateTime>() {}.getType(),
+						new LocalDateTimeAdapter()
 				)
 				.registerTypeAdapter(Class.class, new ClassTypeAdapter());
 	}
