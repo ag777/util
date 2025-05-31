@@ -1,5 +1,8 @@
 package github.ag777.util.lang.thread;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.function.BiConsumer;
@@ -8,12 +11,13 @@ import java.util.function.BiConsumer;
  * 回调线程池CompletionService辅助类
  * 
  * @author ag777
- * @version  create on 2018年08月03日,last modify at 20254年05月29日
+ * @version  create on 2018年08月03日,last modify at 2025年05月31日
  */
 public class CompletionServiceHelper<T, V> {
 	private ExecutorService pool;
 	private CompletionService<T> completionService;
 	private final Map<Future<T>, V> taskInfoMap;
+	private final List<Future<T>> taskList;
 
 	public CompletionServiceHelper(int poolSize) {
 		this(Executors.newFixedThreadPool(poolSize));
@@ -22,7 +26,8 @@ public class CompletionServiceHelper<T, V> {
 	public CompletionServiceHelper(ExecutorService pool) {
 		this.pool = pool;
 		completionService = new ExecutorCompletionService<>(pool);
-		taskInfoMap = new ConcurrentHashMap<>(1);
+		taskInfoMap = new ConcurrentHashMap<>(10);
+		taskList = Collections.synchronizedList(new LinkedList<>());
 	}
 	public ExecutorService getExecutorService() {
 		return pool;
@@ -41,7 +46,7 @@ public class CompletionServiceHelper<T, V> {
 	 */
 	public int getTaskCount() {
 		// 返回任务信息映射表的大小，即当前任务的数量
-		return taskInfoMap.size();
+		return taskList.size();
 	}
 
 	/**
@@ -56,6 +61,7 @@ public class CompletionServiceHelper<T, V> {
 		if (bindData != null) {
 			taskInfoMap.put(myTask, bindData); // 将任务与关联数据绑定
 		}
+		taskList.add(myTask);
 		whenTaskAdd(myTask, bindData);
 		return this;
 	}
@@ -73,6 +79,7 @@ public class CompletionServiceHelper<T, V> {
 		if (bindData != null) {
 			taskInfoMap.put(myTask, bindData); // 将任务与关联数据绑定
 		}
+		taskList.add(myTask);
 		whenTaskAdd(myTask, bindData);
 		return this;
 	}
@@ -92,6 +99,7 @@ public class CompletionServiceHelper<T, V> {
 	 */
 	public Task<T, V> take() throws InterruptedException {
 		Future<T> task = completionService.take();
+		taskList.remove(task);
 		return new Task<>(task, taskInfoMap.remove(task));
 	}
 
@@ -104,6 +112,7 @@ public class CompletionServiceHelper<T, V> {
 		if (task == null) {
 			return null;
 		}
+		taskList.remove(task);
 		return new Task<>(task, taskInfoMap.remove(task));
 	}
 
@@ -119,6 +128,7 @@ public class CompletionServiceHelper<T, V> {
 		if (task == null) {
 			return null;
 		}
+		taskList.remove(task);
 		return new Task<>(task, taskInfoMap.remove(task));
 	}
 
@@ -158,6 +168,7 @@ public class CompletionServiceHelper<T, V> {
 		pool = null;
 		completionService = null;
 		taskInfoMap.clear();
+		taskList.clear();
 	}
 
 	/**
