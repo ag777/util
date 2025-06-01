@@ -65,11 +65,13 @@ public class ThreadPoolUtils {
      * @param callable 任务
      * @return 异步任务
      */
-    public static <R>CompletableFuture<R> executeForCompletableFuture(AbstractExecutorService pool, Callable<R> callable) {
+    public static <R>CompletableFuture<R> executeForCompletableFuture(ExecutorService pool, Callable<R> callable) {
         CompletableFuture<R> task = new CompletableFuture<>();
         Future<?> f = pool.submit(() -> {
             try {
                 task.complete(callable.call());
+            } catch (InterruptedException e) {
+                task.cancel(true);
             } catch (Throwable e) {
                 task.completeExceptionally(e);
             }
