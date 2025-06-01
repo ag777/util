@@ -3,10 +3,7 @@ package github.ag777.util.lang.thread;
 import github.ag777.util.lang.thread.model.ComparableFutureTask;
 import github.ag777.util.lang.thread.model.ComparableTask;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 线程池工具类
@@ -57,6 +54,32 @@ public class ThreadPoolUtils {
         FutureTask<E> t = new ComparableFutureTask<>(task);
         pool.execute(t);
         return t;
+    }
+
+    /**
+     * 提交任务
+     * <p>为了解决CompletableFuture.supplyAsync方法创建的CompletableFuture，调用cancel(true)无法中断线程的问题，
+     * 
+     * @param <R> 任务返回类型
+     * @param pool 线程池
+     * @param callable 任务
+     * @return 异步任务
+     */
+    public static <R>CompletableFuture<R> executeForCompletableFuture(AbstractExecutorService pool, Callable<R> callable) {
+        CompletableFuture<R> task = new CompletableFuture<>();
+        Future<?> f = pool.submit(() -> {
+            try {
+                task.complete(callable.call());
+            } catch (Throwable e) {
+                task.completeExceptionally(e);
+            }
+        });
+        task.whenComplete((r, t)->{
+            if (task.isCancelled()) {
+                f.cancel(true);
+            }
+        });
+        return task;
     }
 
     private ThreadPoolUtils() {}
