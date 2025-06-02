@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * 字符串处理工具类
  * 
  * @author ag777
- * @version last modify at 2020年09月23日
+ * @version last modify at 2025年06月02日
  */
 public class StringUtils {
 
@@ -466,4 +466,34 @@ public class StringUtils {
         return String.valueOf(src).repeat(Math.max(0, times));
 	}
 
+	/**
+	 * 拆分字符串,传入空字符串返回空数组
+	 * @param src 源
+	 * @param regex 拆分正则
+	 * @return 拆分结果
+	 */
+	public static String[] split(String src, String regex) {
+		if (StringUtils.isBlank(src)) {
+			return new String[]{};
+		}
+		src = src.trim();
+		return src.split(regex);
+	}
+
+	/**
+	 *
+	 * 拆分字符串,转为int数组,传入空字符串返回空数组
+	 * @param src 源
+	 * @param regex 拆分正则
+	 * @return 拆分结果
+	 * @throws NumberFormatException 某一项转换为数字失败
+	 */
+	public static int[] split2Ints(String src, String regex) throws NumberFormatException {
+		String[] group = split(src, regex);
+		int[] result = new int[group.length];
+		for (int i = 0; i < group.length; i++) {
+			result[i] = Integer.parseInt(group[i]);
+		}
+		return result;
+	}
 }
