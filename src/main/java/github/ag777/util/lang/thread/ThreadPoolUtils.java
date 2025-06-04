@@ -4,11 +4,12 @@ import github.ag777.util.lang.thread.model.ComparableFutureTask;
 import github.ag777.util.lang.thread.model.ComparableTask;
 
 import java.util.concurrent.*;
+import java.util.function.Supplier;
 
 /**
  * 线程池工具类
  * @author ag777 <837915770@vip.qq.com>
- * Time: created at 2021/6/7. last modify at 2023/3/1.
+ * Time: created at 2021/6/7. last modify at 2025/6/4.
  */
 public class ThreadPoolUtils {
 
@@ -59,14 +60,29 @@ public class ThreadPoolUtils {
     /**
      * 提交任务
      * <p>为了解决CompletableFuture.supplyAsync方法创建的CompletableFuture，调用cancel(true)无法中断线程的问题，
-     * 
+     *
      * @param <R> 任务返回类型
      * @param pool 线程池
      * @param callable 任务
      * @return 异步任务
      */
     public static <R>CompletableFuture<R> executeForCompletableFuture(ExecutorService pool, Callable<R> callable) {
-        CompletableFuture<R> task = new CompletableFuture<>();
+        return executeForCompletableFuture(pool, callable, () -> new CompletableFuture<>());
+    }
+
+    /**
+     * 提交任务
+     * <p>为了解决CompletableFuture.supplyAsync方法创建的CompletableFuture，调用cancel(true)无法中断线程的问题，
+     *
+     * @param <R> 任务返回类型
+     * @param <C> 任务类型
+     * @param pool 线程池
+     * @param callable 任务
+     * @param getFuture 获取CompletableFuture的工厂
+     * @return 任务
+     */
+    public static <R, C extends CompletableFuture<R>> C executeForCompletableFuture(ExecutorService pool, Callable<R> callable, Supplier<C> getFuture) {
+        C task = getFuture.get();
         Future<?> f = pool.submit(() -> {
             try {
                 task.complete(callable.call());
