@@ -12,7 +12,7 @@ import java.util.function.Predicate;
  * 有关 <code>Map</code> 哈希表工具类。
  * 
  * @author ag777
- * @version create on 2017年09月22日,last modify at 2024年10月27日
+ * @version create on 2017年09月22日,last modify at 2025年06月14日
  */
 public class MapUtils {
 	
@@ -30,10 +30,9 @@ public class MapUtils {
 	
 	/**
 	 * 创建一个新的Map并将给定Map的所有键值对复制到新Map中
-	 * <p>
+	 * 
 	 * 此方法通过创建新的HashMap并执行putAll操作来实现Map的深度拷贝。
 	 * 新Map的初始容量将设置为源Map的大小，以优化性能。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -48,10 +47,9 @@ public class MapUtils {
 	
 	/**
 	 * 构建包含单个键值对的Map
-	 * <p>
+	 * 
 	 * 创建一个新的HashMap实例，并添加指定的键值对。
 	 * 这是一个便捷方法，用于快速创建只包含一个条目的Map。
-	 * </p>
 	 * 
 	 * @param key 要添加的键
 	 * @param value 要添加的值
@@ -63,10 +61,9 @@ public class MapUtils {
 	
 	/**
 	 * 构建包含单个键值对的泛型Map
-	 * <p>
+	 * 
 	 * 创建一个新的HashMap实例，并添加指定的键值对。
 	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -83,11 +80,13 @@ public class MapUtils {
 	}
 
 	/**
-	 * 构建Map
-	 * <p>
-	 * 	含四对key-value
-	 * </p>
-	 *
+	 * 构建包含两个键值对的Map
+	 * 
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2) {
 		return of(String.class, Object.class, key1, value1, key2, value2);
@@ -95,10 +94,9 @@ public class MapUtils {
 	
 	/**
 	 * 构建包含两个键值对的泛型Map
-	 * <p>
+	 * 
 	 * 创建一个新的HashMap实例，并添加两个指定的键值对。
 	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -117,11 +115,17 @@ public class MapUtils {
 	}
 
 	/**
-	 * 构建Map
-	 * <p>
-	 * 	含四对key-value
-	 * </p>
-	 *
+	 * 构建包含三个键值对的Map
+	 * 
+	 * 创建一个新的HashMap实例，并添加三个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
 	 */
 	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2, String key3, Object value3) {
 		return of(String.class, Object.class, key1, value1, key2, value2, key3, value3);
@@ -129,10 +133,10 @@ public class MapUtils {
 
 	/**
 	 * 构建包含三个键值对的泛型Map
-	 * <p>
+	 * 
 	 * 创建一个新的HashMap实例，并添加三个指定的键值对。
 	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
-	 * </p>
+	 * 
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -153,18 +157,39 @@ public class MapUtils {
 	}
 	
 	/**
-	 * 构建Map
-	 * <p>
-	 * 	含四对key-value
-	 * </p>
+	 * 构建包含四个键值对的Map
 	 * 
+	 * 创建一个新的HashMap实例，并添加四个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2, String key3, Object value3, String key4, Object value4) {
 		return of(String.class, Object.class, key1, value1, key2, value2, key3, value3, key4, value4);
 	}
 	
 	/**
-	 * 构建Map
+	 * 构建包含四个键值对的泛型Map
+	 * 
+	 * 创建一个新的HashMap实例，并添加四个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param <K> Map键的类型
+	 * @param <V> Map值的类型
+	 * @param clazzT 键的类型Class对象
+	 * @param clazzV 值的类型Class对象
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
 	 */
 	public static <K, V>Map<K, V> of(Class<K> clazzT, Class<V> clazzV, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
 		Map<K, V> map = of(clazzT, clazzV, key1, value1, key2, value2, key3, value3);
@@ -173,18 +198,48 @@ public class MapUtils {
 	}
 	
 	/**
-	 * 构建Map
-	 * <p>
-	 * 	含五对key-value
-	 * </p>
+	 * 构建包含五个键值对的Map
 	 * 
+	 * 创建一个新的HashMap实例，并添加五个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2, String key3, Object value3, String key4, Object value4, String key5, Object value5) {
 		return of(String.class, Object.class, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5);
 	}
 	
 	/**
-	 * 构建Map
+	 * 构建包含五个键值对的泛型Map
+	 * 
+	 * 创建一个新的HashMap实例，并添加五个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param <K> Map键的类型
+	 * @param <V> Map值的类型
+	 * @param clazzT 键的类型Class对象
+	 * @param clazzV 值的类型Class对象
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static <K, V>Map<K, V> of(Class<K> clazzT, Class<V> clazzV, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5) {
 		Map<K, V> map = of(clazzT, clazzV, key1, value1, key2, value2, key3, value3, key4, value4);
@@ -193,18 +248,52 @@ public class MapUtils {
 	}
 	
 	/**
-	 * 构建Map
-	 * <p>
-	 * 	含六对key-value
-	 * </p>
+	 * 构建包含六个键值对的Map
 	 * 
+	 * 创建一个新的HashMap实例，并添加六个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2, String key3, Object value3, String key4, Object value4, String key5, Object value5, String key6, Object value6) {
 		return of(String.class, Object.class, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5, key6, value6);
 	}
 	
 	/**
-	 * 构建Map
+	 * 构建包含六个键值对的泛型Map
+	 * 
+	 * 创建一个新的HashMap实例，并添加六个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param <K> Map键的类型
+	 * @param <V> Map值的类型
+	 * @param clazzT 键的类型Class对象
+	 * @param clazzV 值的类型Class对象
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static <K, V>Map<K, V> of(Class<K> clazzT, Class<V> clazzV, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6) {
 		Map<K, V> map = of(clazzT, clazzV, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5);
@@ -213,18 +302,56 @@ public class MapUtils {
 	}
 	
 	/**
-	 * 构建Map
-	 * <p>
-	 * 	含七对key-value
-	 * </p>
+	 * 构建包含七个键值对的Map
 	 * 
+	 * 创建一个新的HashMap实例，并添加七个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @param key7 第七个键
+	 * @param value7 第七个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2, String key3, Object value3, String key4, Object value4, String key5, Object value5, String key6, Object value6, String key7, Object value7) {
 		return of(String.class, Object.class, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5, key6, value6, key7, value7);
 	}
 	
 	/**
-	 * 构建Map
+	 * 构建包含七个键值对的泛型Map
+	 * 
+	 * 创建一个新的HashMap实例，并添加七个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param <K> Map键的类型
+	 * @param <V> Map值的类型
+	 * @param clazzT 键的类型Class对象
+	 * @param clazzV 值的类型Class对象
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @param key7 第七个键
+	 * @param value7 第七个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static <K, V>Map<K, V> of(Class<K> clazzT, Class<V> clazzV, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7) {
 		Map<K, V> map = of(clazzT, clazzV, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5, key6, value6);
@@ -233,18 +360,60 @@ public class MapUtils {
 	}
 	
 	/**
-	 * 构建Map
-	 * <p>
-	 * 	含八对key-value
-	 * </p>
+	 * 构建包含八个键值对的Map
 	 * 
+	 * 创建一个新的HashMap实例，并添加八个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @param key7 第七个键	
+	 * @param value7 第七个值
+	 * @param key8 第八个键
+	 * @param value8 第八个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2, String key3, Object value3, String key4, Object value4, String key5, Object value5, String key6, Object value6, String key7, Object value7, String key8, Object value8) {
 		return of(String.class, Object.class, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5, key6, value6, key7, value7, key8, value8);
 	}
 	
 	/**
-	 * 构建Map
+	 * 构建包含八个键值对的泛型Map
+	 * 
+	 * 创建一个新的HashMap实例，并添加八个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param <K> Map键的类型
+	 * @param <V> Map值的类型
+	 * @param clazzT 键的类型Class对象
+	 * @param clazzV 值的类型Class对象
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @param key7 第七个键
+	 * @param value7 第七个值
+	 * @param key8 第八个键
+	 * @param value8 第八个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static <K, V>Map<K, V> of(Class<K> clazzT, Class<V> clazzV, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8) {
 		Map<K, V> map = of(clazzT, clazzV, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5, key6, value6, key7, value7);
@@ -253,18 +422,64 @@ public class MapUtils {
 	}
 	
 	/**
-	 * 构建Map
-	 * <p>
-	 * 	含九对key-value
-	 * </p>
+	 * 构建包含九个键值对的Map
 	 * 
+	 * 创建一个新的HashMap实例，并添加九个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @param key7 第七个键
+	 * @param value7 第七个值
+	 * @param key8 第八个键
+	 * @param value8 第八个值
+	 * @param key9 第九个键
+	 * @param value9 第九个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2, String key3, Object value3, String key4, Object value4, String key5, Object value5, String key6, Object value6, String key7, Object value7, String key8, Object value8, String key9, Object value9) {
 		return of(String.class, Object.class, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5, key6, value6, key7, value7, key8, value8, key9, value9);
 	}
 	
 	/**
-	 * 构建Map
+	 * 构建包含九个键值对的泛型Map
+	 * 
+	 * 创建一个新的HashMap实例，并添加九个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param <K> Map键的类型
+	 * @param <V> Map值的类型
+	 * @param clazzT 键的类型Class对象
+	 * @param clazzV 值的类型Class对象
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @param key7 第七个键
+	 * @param value7 第七个值
+	 * @param key8 第八个键
+	 * @param value8 第八个值
+	 * @param key9 第九个键
+	 * @param value9 第九个值
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static <K, V>Map<K, V> of(Class<K> clazzT, Class<V> clazzV, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8, K key9, V value9) {
 		Map<K, V> map = of(clazzT, clazzV, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5, key6, value6, key7, value7, key8, value8);
@@ -273,18 +488,70 @@ public class MapUtils {
 	}
 	
 	/**
-	 * 构建map,采用了强转的方式实现,请自行保证参数类型正确性
-	 * <p>
-	 * 	含十对key-value及以上
-	 * </p>
+	 * 构建包含十个键值对的Map
 	 * 
+	 * 创建一个新的HashMap实例，并添加十个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @param key7 第七个键
+	 * @param value7 第七个值
+	 * @param key8 第八个键
+	 * @param value8 第八个值
+	 * @param key9 第九个键
+	 * @param value9 第九个值
+	 * @param key10 第十个键
+	 * @param value10 第十个值
+	 * @param others 其它项,参数数量必须是2的倍数
+	 * @return 包含指定键值对的新Map实例
 	 */
 	public static Map<String, Object> of(String key1, Object value1, String key2, Object value2, String key3, Object value3, String key4, Object value4, String key5, Object value5, String key6, Object value6, String key7, Object value7, String key8, Object value8, String key9, Object value9, String key10, Object value10, Object... others) {
 		return of(String.class, Object.class, key1, value1, key2, value2, key3, value3, key4, value4, key5, value5, key6, value6, key7, value7, key8, value8, key9, value9, key10, value10, others);
 	}
 	
 	/**
-	 * 构建map,采用了强转的方式实现,请自行保证参数类型正确性(others长度为偶数)
+	 * 构建包含十个键值对的泛型Map
+	 * 
+	 * 创建一个新的HashMap实例，并添加十个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
+	 * @param <K> Map键的类型
+	 * @param <V> Map值的类型
+	 * @param clazzT 键的类型Class对象
+	 * @param clazzV 值的类型Class对象
+	 * @param key1 第一个键
+	 * @param value1 第一个值
+	 * @param key2 第二个键
+	 * @param value2 第二个值
+	 * @param key3 第三个键
+	 * @param value3 第三个值
+	 * @param key4 第四个键
+	 * @param value4 第四个值
+	 * @param key5 第五个键
+	 * @param value5 第五个值
+	 * @param key6 第六个键
+	 * @param value6 第六个值
+	 * @param key7 第七个键
+	 * @param value7 第七个值
+	 * @param key8 第八个键
+	 * @param value8 第八个值
+	 * @param key9 第九个键
+	 * @param value9 第九个值
+	 * @param key10 第十个键
+	 * @param value10 第十个值
+	 * @param others 其它项,参数数量必须是2的倍数
+	 * @return 包含指定键值对的新Map实例
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K, V>Map<K, V> of(Class<K> clazzT, Class<V> clazzV, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8, K key9, V value9, K key10, V value10, Object... others) {
@@ -299,18 +566,26 @@ public class MapUtils {
 	}
 
 	/**
-	 *
+	 * 构建包含一个键值对的LinkedHashMap
+	 * 
+	 * 创建一个新的LinkedHashMap实例，并添加一个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
 	 * @param key 第一项的键
 	 * @param value 第一项的值
 	 * @param others 其它项,参数数量必须是2的倍数
-	 * @return Map<String, Object>
+	 * @return LinkedHashMap<String, Object>
 	 */
-	public static Map<String, Object> ofLinked(String key, Object value, Object... others) {
+	public static LinkedHashMap<String, Object> ofLinked(String key, Object value, Object... others) {
 		return ofLinked(String.class, Object.class, key, value, others);
 	}
 
 	/**
-	 * 构建LinkedHashMap,采用了强转的方式实现,请自行保证参数类型正确性(others长度为偶数)
+	 * 构建包含多个键值对的LinkedHashMap
+	 * 
+	 * 创建一个新的LinkedHashMap实例，并添加多个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
 	 * @param clazzT 键的类型
 	 * @param clazzV 值的类型
 	 * @param key1 第一项的键
@@ -318,21 +593,25 @@ public class MapUtils {
 	 * @param others 其它项,参数数量必须是2的倍数
 	 * @param <K> K
 	 * @param <V> V
-	 * @return Map<K, V>
+	 * @return LinkedHashMap<K, V>
 	 */
-	public static <K, V>Map<K, V> ofLinked(Class<K> clazzT, Class<V> clazzV, K key1, V value1, Object... others) {
+	public static <K, V>LinkedHashMap<K, V> ofLinked(Class<K> clazzT, Class<V> clazzV, K key1, V value1, Object... others) {
 		int size = 1;
 		if(others != null)  {
 			size += others.length / 2;
 		}
-		Map<K, V> map = new LinkedHashMap<>(size);
+		LinkedHashMap<K, V> map = new LinkedHashMap<>(size);
 		putAll(map, key1, value1);
-		return putAll(map, others);
+		putAll(map, others);
+		return map;
 	}
 	
 	/**
 	 * 如果条件成立则往map里插值
-	 * <p>该方法不进行map的空指针判断
+	 * 
+	 * 创建一个新的HashMap实例，并添加一个指定的键值对。
+	 * 通过指定键和值的类型，提供类型安全的Map创建方式。
+	 * 
 	 * @param map map
 	 * @param key 键
 	 * @param value 值
@@ -351,8 +630,8 @@ public class MapUtils {
 	 * 往map里插入任意多的键值对,采用了强转的方式实现,请自行保证参数类型正确性(others长度为偶数)
 	 * @param map map
 	 * @param predicate 返回true则插入
-	 * @param others others
-	 * @return
+	 * @param others 其它项,参数数量必须是2的倍数
+	 * @return Map<K, V>
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K, V>Map<K, V> putAllIf(Map<K, V> map, BiPredicate<K, V> predicate, Object... others) {
@@ -374,7 +653,7 @@ public class MapUtils {
 	 * 往map里插入任意多的键值对,采用了强转的方式实现,请自行保证参数类型正确性(others长度为偶数)
 	 * @param map 原始map
 	 * @param others 需要插入的键值对
-	 * @return
+	 * @return Map<K, V>
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K, V>Map<K, V> putAll(Map<K, V> map, Object... others) {
@@ -391,10 +670,9 @@ public class MapUtils {
 	
 	/**
 	 * 空指针安全put
-	 * <p>
+	 * 
 	 * 如果传入的Map为null，会自动创建一个新的HashMap实例。
 	 * 这个方法可以避免NullPointerException，使代码更加健壮。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -413,11 +691,10 @@ public class MapUtils {
 	
 	/**
 	 * 空指针安全的putAll操作
-	 * <p>
+	 * 
 	 * 如果目标Map为null，会自动创建一个新的HashMap实例。
 	 * 新HashMap的初始容量会根据源Map的大小来优化。
 	 * 这个方法可以避免NullPointerException，使代码更加健壮。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -437,9 +714,9 @@ public class MapUtils {
 	
 	/**
      * 获取map里key对应的值，不存在或null返回defaultValue
-     * <p>
+     * 
      * 例如：
-     * </p><pre>{@code
+     * <pre>{@code
      * 		现有值为{a:1,b:2}的map
      *		MapUtils.get(map, a, 2) = 1
      *		MapUtils.get(map, c, 2) = 2
@@ -448,7 +725,7 @@ public class MapUtils {
      * @param map 校验的类
      * @param key 键
      * @param defaultValue 默认值
-     * @return 
+     * @return 值
      */
 	@SuppressWarnings("unchecked")
 	public static <K,V,T>T get(Map<K, V> map, K key, T defaultValue) {
@@ -500,9 +777,9 @@ public class MapUtils {
 	
 	/**
      * 获取map里key对应的值，不存在或null返回null
-     * <p>
+     * 
      * 例如：
-     * </p><pre>{@code
+     * <pre>{@code
      * 		现有值为{a:1,b:2}的map
      *		MapUtils.get(map, a) = 1
      *		MapUtils.get(map, c) = null
@@ -645,10 +922,9 @@ public class MapUtils {
 	
 	/**
 	 * 从Map中获取Float值
-	 * <p>
+	 * 
 	 * 获取指定键对应的值，并尝试将其转换为Float类型。
 	 * 如果值不存在或无法转换，返回null。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -663,10 +939,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取float值，如果键不存在或转换失败，则返回默认值
-	 * <p>
+	 * 
 	 * 获取指定键对应的值，并尝试将其转换为float类型。
 	 * 如果值不存在或无法转换，返回默认值。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -682,10 +957,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取第一个Float值
-	 * <p>
+	 * 
 	 * 获取指定键数组中的第一个匹配键对应的值，并尝试将其转换为Float类型。
 	 * 如果值不存在或无法转换，返回null。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -700,10 +974,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取第一个float值，如果键不存在或转换失败，则返回默认值
-	 * <p>
+	 * 
 	 * 获取指定键数组中的第一个匹配键对应的值，并尝试将其转换为float类型。
 	 * 如果值不存在或无法转换，返回默认值。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -719,10 +992,9 @@ public class MapUtils {
 	
 	/**
 	 * 从Map中获取Integer值
-	 * <p>
+	 * 
 	 * 获取指定键对应的值，并尝试将其转换为Integer类型。
 	 * 如果值不存在或无法转换，返回null。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -737,10 +1009,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取int值，如果键不存在或转换失败，则使用默认值
-	 * <p>
+	 * 
 	 * 获取指定键对应的值，并尝试将其转换为int类型。
 	 * 如果值不存在或无法转换，返回默认值。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -756,10 +1027,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取第一个Integer值
-	 * <p>
+	 * 
 	 * 获取指定键数组中的第一个匹配键对应的值，并尝试将其转换为Integer类型。
 	 * 如果值不存在或无法转换，返回null。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -774,10 +1044,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取第一个int值，如果键不存在或转换失败，则使用默认值
-	 * <p>
+	 * 
 	 * 获取指定键数组中的第一个匹配键对应的值，并尝试将其转换为int类型。
 	 * 如果值不存在或无法转换，返回默认值。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -793,10 +1062,9 @@ public class MapUtils {
 	
 	/**
 	 * 从Map中获取Long值，如果键不存在或转换失败，则返回null
-	 * <p>
+	 * 
 	 * 获取指定键对应的值，并尝试将其转换为Long类型。
 	 * 如果值不存在或无法转换，返回null。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -811,10 +1079,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取Long值，如果键不存在或转换失败，则返回默认值
-	 * <p>
+	 * 
 	 * 获取指定键对应的值，并尝试将其转换为Long类型。
 	 * 如果值不存在或无法转换，返回默认值。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -830,10 +1097,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取第一个Long值，如果键不存在或转换失败，则返回null
-	 * <p>
+	 * 
 	 * 获取指定键数组中的第一个匹配键对应的值，并尝试将其转换为Long类型。
 	 * 如果值不存在或无法转换，返回null。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -848,10 +1114,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取第一个long值，如果键不存在或转换失败，则使用默认值
-	 * <p>
+	 * 
 	 * 获取指定键数组中的第一个匹配键对应的值，并尝试将其转换为long类型。
 	 * 如果值不存在或无法转换，返回默认值。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -867,10 +1132,9 @@ public class MapUtils {
 	
 	/**
 	 * 从Map中获取Boolean值
-	 * <p>
+	 * 
 	 * 获取指定键对应的值，并尝试将其转换为Boolean类型。
 	 * 如果值不存在或无法转换，返回null。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -886,10 +1150,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取Boolean值，如果键不存在或转换失败，则返回默认值
-	 * <p>
+	 * 
 	 * 获取指定键对应的值，并尝试将其转换为Boolean类型。
 	 * 如果值不存在或无法转换，返回默认值。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -906,10 +1169,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取第一个Boolean值，如果键不存在或转换失败，则返回null
-	 * <p>
+	 * 
 	 * 获取指定键数组中的第一个匹配键对应的值，并尝试将其转换为Boolean类型。
 	 * 如果值不存在或无法转换，返回null。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -925,10 +1187,9 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取第一个Boolean值，如果键不存在或转换失败，则返回默认值
-	 * <p>
+	 * 
 	 * 获取指定键数组中的第一个匹配键对应的值，并尝试将其转换为Boolean类型。
 	 * 如果值不存在或无法转换，返回默认值。
-	 * </p>
 	 * 
 	 * @param <K> Map键的类型
 	 * @param <V> Map值的类型
@@ -945,13 +1206,12 @@ public class MapUtils {
 	
 	/**
 	 * 从Map中获取指定键的Date值
-	 * <p>
+	 * 
 	 * 支持四种格式
 	 *	yyyy-MM-dd HH:mm:ss
 	 *	yyyy-MM-dd HH:mm
 	 * 	yyyy-MM-dd
 	 * 	HH:mm:ss
-	 * </p>
 	 *
 	 * @param map 包含键值对的Map
 	 * @param key 需要获取的键
@@ -964,12 +1224,11 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取指定键的Date值，并指定默认值
-	 * <p>
+	 * 
 	 * 支持三种格式
 	 * 	yyyy-MM-dd HH:mm:ss
 	 * 	yyyy-MM-dd
 	 * 	HH:mm:ss
-	 * </p>
 	 *
 	 * @param map 包含键值对的Map
 	 * @param key 需要获取的键
@@ -983,13 +1242,12 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取多个键中的第一个Date值
-	 * <p>
+	 * 
 	 * 支持四种格式
 	 *	yyyy-MM-dd HH:mm:ss
 	 *	yyyy-MM-dd HH:mm
 	 * 	yyyy-MM-dd
 	 * 	HH:mm:ss
-	 * </p>
 	 *
 	 * @param map 包含键值对的Map
 	 * @param keys 需要尝试获取的键数组
@@ -1002,12 +1260,11 @@ public class MapUtils {
 
 	/**
 	 * 从Map中获取多个键中的第一个Date值，并指定默认值
-	 * <p>
+	 * 
 	 * 支持三种格式
 	 * 	yyyy-MM-dd HH:mm:ss
 	 * 	yyyy-MM-dd
 	 * 	HH:mm:ss
-	 * </p>
 	 *
 	 * @param map 包含键值对的Map
 	 * @param keys 需要尝试获取的键数组
@@ -1070,7 +1327,7 @@ public class MapUtils {
 	 * @param src src
 	 * @param key1 key1
 	 * @param key2 key2
-	 * @return
+	 * @return 转换后的map
 	 */
 	public static <K,V>Map<K,V> convertKey(Map<K,V> src, K key1, K key2) {
 		if(isEmpty(src)) {
@@ -1088,40 +1345,41 @@ public class MapUtils {
 	 * @param map map
 	 * @param separatorItem separatorItem
 	 * @param separatorKeyValue separatorKeyValue
-	 * @return
+	 * @return map转字符串，形如key1=value1,key2=value2,key3=value3
 	 */
 	public static <K,V>String toString(Map<K,V> map, String separatorItem, String separatorKeyValue) {
 		if(isEmpty(map)) {
 			return "";
 		}
 		StringBuilder sb = null;
-		Iterator<K> itor = map.keySet().iterator();
-		while(itor.hasNext()) {
-			if(sb == null) {
-				sb = new StringBuilder();
-			} else if(separatorItem != null){
-				sb.append(separatorItem);
-			}
-			K key = itor.next();
-			V value = map.get(key);
-			sb.append(key);
-			if(separatorKeyValue != null) {
-				sb.append(separatorKeyValue);
-			}
-			sb.append(value);
-		}
-		return sb.toString();	//理论上不用考虑sb为null的情况，因为map不为空
-	}
+        for (K k : map.keySet()) {
+            if (sb == null) {
+                sb = new StringBuilder();
+            } else if (separatorItem != null) {
+                sb.append(separatorItem);
+            }
+            V value = map.get(k);
+            sb.append(k);
+            if (separatorKeyValue != null) {
+                sb.append(separatorKeyValue);
+            }
+            sb.append(value);
+        }
+        if (sb != null) {
+            return sb.toString();	//理论上不用考虑sb为null的情况，因为map不为空
+        }
+		return "";
+    }
 	
 	/**
-	 * 对linkedHashedMap进行排序
-	 * <p>
-	 * 参考:https://blog.csdn.net/qq997404392/article/details/73333215
-	 * </p>
-	 * @param src src
-	 * @param comparator comparator
-	 * @return
-	 */
+     * 对linkedHashedMap进行排序
+     *
+     * <a href="https://blog.csdn.net/qq997404392/article/details/73333215">参考</a>
+     *
+     * @param src 源map
+     * @param comparator 排序器
+     * @return 排序后的map
+     */
 	public static <K,V>Map<K,V> sort(LinkedHashMap<K,V> src, Comparator<Entry<K, V>> comparator) {
 		if(isEmpty(src)) {
 			return src;
@@ -1140,11 +1398,11 @@ public class MapUtils {
 	
 	/**
      * 将List<Map>中的键值重新组合成新的Map
-     * <p>
+     * 
      * 可以理解为纵表转横表。
      * 例如：现有值为[{a:key1,b:2}{a:key2,b:3}]的list，
      * MapUtils.of(list, "a", "b") = {key1:2, key2:3}
-     * </p>
+     * 
      * 
      * @param list 源数据列表
      * @param keyTitle 作为新map的key的键名
@@ -1164,10 +1422,9 @@ public class MapUtils {
 	
 	/**
 	 * 根据分隔符拆分字符串得到Map
-	 * <p>
+	 * 
 	 * 注意分隔符都是正则表达式（注意转义问题）。
 	 * key-value分割符无法拆分的项会被略过，不会报错。
-	 * </p>
 	 * 
 	 * @param src 源字符串
 	 * @param separatorItem 分割Map每一项的分隔符
