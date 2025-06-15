@@ -6,10 +6,14 @@ import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
 /**
  * @author ag777 <837915770@vip.qq.com>
- * @version 2025/4/2 下午11:15
+ * @version 2025/6/15 下午21:19
  */
 public class ObjectUtils {
     /**
@@ -426,5 +430,125 @@ public class ObjectUtils {
             return false;
         }
         return a.equals(b);
+    }
+
+    /**
+     * 使用CompletableFuture的更优雅实现（JDK21推荐方式）
+     * @param judgement 判定是否达到条件
+     * @param time 时间
+     * @param timeUnit 时间单位
+     * @return true表示在超时前达到条件
+     * @throws InterruptedException 中断
+     * @throws TimeoutException 超时
+     */
+    public static boolean monitor(Supplier<Boolean> judgement, long time, TimeUnit timeUnit) 
+            throws InterruptedException, TimeoutException {
+        try {
+            return CompletableFuture.supplyAsync(() -> {
+                while (!judgement.get()) {
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(e);
+                    }
+                }
+                return true;
+            }).get(time, timeUnit);
+        } catch (java.util.concurrent.ExecutionException e) {
+            if (e.getCause() instanceof RuntimeException re) {
+                if (re.getCause() instanceof InterruptedException ie) {
+                    throw ie;
+                }
+            }
+            // 忽略其它异常
+            return false;
+        } catch (java.util.concurrent.TimeoutException e) {
+            throw new TimeoutException();
+        }
+    }
+
+    /**
+     * 使用Virtual Threads的实现（JDK21特性）
+     * Virtual Threads更轻量，适合大量并发监控任务
+     * @param judgement 判定是否达到条件
+     * @param time 时间
+     * @param timeUnit 时间单位
+     * @return true表示在超时前达到条件
+     * @throws InterruptedException 中断
+     * @throws TimeoutException 超时
+     */
+    public static boolean monitorWithVirtualThread(Supplier<Boolean> judgement, long time, TimeUnit timeUnit) 
+            throws InterruptedException, TimeoutException {
+        try (var executor = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var future = executor.submit(() -> {
+                while (!judgement.get()) {
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(e);
+                    }
+                }
+                return true;
+            });
+            
+            try {
+                return future.get(time, timeUnit);
+            } catch (java.util.concurrent.ExecutionException e) {
+                if (e.getCause() instanceof RuntimeException re) {
+                    if (re.getCause() instanceof InterruptedException ie) {
+                        throw ie;
+                    }
+                }
+               // 忽略其它异常
+               return false;
+            } catch (java.util.concurrent.TimeoutException e) {
+                throw new TimeoutException();
+            }
+        }
+    }
+
+    /**
+     * 使用可配置检查间隔的版本
+     * @param judgement 判定是否达到条件
+     * @param time 时间
+     * @param timeUnit 时间单位
+     * @param checkInterval 检查间隔时间
+     * @param checkIntervalUnit 检查间隔时间单位
+     * @return true表示在超时前达到条件
+     * @throws InterruptedException 中断
+     * @throws TimeoutException 超时
+     */
+    public static boolean monitorWithVirtualThread(Supplier<Boolean> judgement, long time, TimeUnit timeUnit, 
+                                         long checkInterval, TimeUnit checkIntervalUnit) 
+            throws InterruptedException, TimeoutException {
+        try (var executor = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var future = executor.submit(() -> {
+                while (!judgement.get()) {
+                    try {
+                        checkIntervalUnit.sleep(checkInterval);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(e);
+                    }
+                }
+                return true;
+            });
+            
+            try {
+                return future.get(time, timeUnit);
+            } catch (java.util.concurrent.ExecutionException e) {
+                if (e.getCause() instanceof RuntimeException re) {
+                    if (re.getCause() instanceof InterruptedException ie) {
+                        throw ie;
+                    }
+                }
+                // 忽略其它异常
+                return false;
+            } catch (java.util.concurrent.TimeoutException e) {
+                throw new TimeoutException();
+            }
+        }
     }
 }
