@@ -126,6 +126,70 @@ public class UriBuilder {
         return of(URI.create(uriString));
     }
 
+
+    /**
+     * 获取 URI 的 scheme 部分。
+     *
+     * @return URI 的 scheme 部分。
+     */
+    public String getScheme() {
+        return scheme;
+    }
+
+    /**
+     * 获取 URI 的用户信息部分。
+     *
+     * @return URI 的用户信息部分。
+     */
+    public String getUserInfo() {
+        return userInfo;
+    }
+
+    /**
+     * 获取 URI 的主机名。
+     *
+     * @return URI 的主机名。
+     */
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * 获取 URI 的端口号。
+     *
+     * @return URI 的端口号。
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     * 获取 URI 的路径部分。
+     *
+     * @return URI 的路径部分。
+     */
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * 获取 URI 的查询参数部分。
+     *
+     * @return URI 的查询参数部分。
+     */
+    public String getQuery() {
+        return buildQuery();
+    }
+
+    /**
+     * 获取 URI 的片段部分。
+     *
+     * @return URI 的片段部分。
+     */
+    public String getFragment() {
+        return fragment;
+    }
+
     // --- 解析和构建 --- 
 
     private static void parseQuery(String query, Map<String, List<String>> params) {
