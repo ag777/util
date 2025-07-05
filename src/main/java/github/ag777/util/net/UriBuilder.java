@@ -49,7 +49,7 @@ import java.util.stream.Stream;
  * }</pre>
  *
  * @author ag777
- * @version 4.0
+ * @version 4.1
  * @since 2025.07
  */
 public class UriBuilder {
@@ -161,8 +161,15 @@ public class UriBuilder {
             return null;
         }
         return this.queryParams.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream()
-                        .map(value -> encode(entry.getKey()) + "=" + (value == null ? "" : encode(value))))
+                .flatMap(entry -> {
+                    List<String> values = entry.getValue();
+                    // 防御性检查：如果与键关联的列表为 null，则视为空流，不生成任何参数
+                    if (values == null) {
+                        return Stream.empty();
+                    }
+                    return values.stream()
+                            .map(value -> encode(entry.getKey()) + "=" + (value == null ? "" : encode(value)));
+                })
                 .collect(Collectors.joining("&"));
     }
 
@@ -270,25 +277,25 @@ public class UriBuilder {
     }
 
     /**
-     * 替换指定键的参数值，如果值转换器为 null，则移除该键。
+     * 替换指定键的参数值。
      *
      * @param key 参数的键。
      * @param valueConverter 值转换器，如果为 null，则移除该键。
      * @return 当前 {@code UriBuilder} 实例，用于链式调用。
      */
-    public UriBuilder replaceParam(String key, Function<List<String>, Object> valueConverter) {
+    public UriBuilder replaceParam(String key, Function<String, Object> valueConverter) {
         Objects.requireNonNull(key, "键不能为空");
         if (valueConverter == null) {
-            this.queryParams.remove(key);
+            return this;
         }
-        Object newVal = valueConverter.apply(getParamList(key));
+        Object newVal = valueConverter.apply(getParam(key));
         if (newVal == null) {
             this.queryParams.remove(key);
         } else {
             this.queryParams.put(key, convertValueToStrings(newVal));
         }
         return this;
-    }    
+    }
 
     /**
      * 移除指定键的所有查询参数。
@@ -483,4 +490,5 @@ public class UriBuilder {
         return build().toString();
     }
 }
+
 
