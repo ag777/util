@@ -126,76 +126,13 @@ public class UriBuilder {
         return of(URI.create(uriString));
     }
 
-
-    /**
-     * 获取 URI 的 scheme 部分。
-     *
-     * @return URI 的 scheme 部分。
-     */
-    public String getScheme() {
-        return scheme;
-    }
-
-    /**
-     * 获取 URI 的用户信息部分。
-     *
-     * @return URI 的用户信息部分。
-     */
-    public String getUserInfo() {
-        return userInfo;
-    }
-
-    /**
-     * 获取 URI 的主机名。
-     *
-     * @return URI 的主机名。
-     */
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * 获取 URI 的端口号。
-     *
-     * @return URI 的端口号。
-     */
-    public int getPort() {
-        return port;
-    }
-
-    /**
-     * 获取 URI 的路径部分。
-     *
-     * @return URI 的路径部分。
-     */
-    public String getPath() {
-        return path;
-    }
-
-    /**
-     * 获取 URI 的查询参数部分。
-     *
-     * @return URI 的查询参数部分。
-     */
-    public String getQuery() {
-        return buildQuery();
-    }
-
-    /**
-     * 获取 URI 的片段部分。
-     *
-     * @return URI 的片段部分。
-     */
-    public String getFragment() {
-        return fragment;
-    }
-
     // --- 解析和构建 --- 
 
     private static void parseQuery(String query, Map<String, List<String>> params) {
         if (query == null || query.isEmpty()) {
             return;
         }
+        params.clear();
         Stream.of(query.split("&"))
                 .forEach(pair -> {
                     int idx = pair.indexOf('=');
@@ -306,6 +243,18 @@ public class UriBuilder {
     }
 
     /**
+     * 设置查询参数。
+     *
+     * @param query 查询参数。
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder query(String query) {
+        this.queryParams.clear();
+        parseQuery(query, this.queryParams);
+        return this;
+    }
+
+    /**
      * 设置一个查询参数，替换该键已有的任何值。
      * <p>
      * 值可以是任意类型，工具类会自动进行字符串转换：
@@ -373,6 +322,69 @@ public class UriBuilder {
     }
 
     // --- Getters --- 
+
+    /**
+     * 获取 URI 的 scheme 部分。
+     *
+     * @return URI 的 scheme 部分。
+     */
+    public String scheme() {
+        return scheme;
+    }
+
+    /**
+     * 获取 URI 的用户信息部分。
+     *
+     * @return URI 的用户信息部分。
+     */
+    public String userInfo() {
+        return userInfo;
+    }
+
+    /**
+     * 获取 URI 的主机名。
+     *
+     * @return URI 的主机名。
+     */
+    public String host() {
+        return host;
+    }
+
+    /**
+     * 获取 URI 的端口号。
+     *
+     * @return URI 的端口号。
+     */
+    public int port() {
+        return port;
+    }
+
+    /**
+     * 获取 URI 的路径部分。
+     *
+     * @return URI 的路径部分。
+     */
+    public String path() {
+        return path;
+    }
+
+    /**
+     * 获取 URI 的查询参数部分。
+     *
+     * @return URI 的查询参数部分。
+     */
+    public String query() {
+        return buildQuery();
+    }
+
+    /**
+     * 获取 URI 的片段部分。
+     *
+     * @return URI 的片段部分。
+     */
+    public String fragment() {
+        return fragment;
+    }
 
     /**
      * 获取单个查询参数的值。
