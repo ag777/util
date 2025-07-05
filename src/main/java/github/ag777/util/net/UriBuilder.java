@@ -321,6 +321,16 @@ public class UriBuilder {
         return this;
     }
 
+    /**
+     * 移除所有值为 null 的查询参数。
+     *
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder clearNullParams() {
+        this.queryParams.entrySet().removeIf(entry -> entry.getValue().isEmpty() || entry.getValue().stream().allMatch(Objects::isNull));
+        return this;
+    }
+
     // --- Getters --- 
 
     /**
