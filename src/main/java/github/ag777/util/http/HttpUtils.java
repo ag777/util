@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  * </ul>
  *
  * @author ag777
- * @version 最后修改于 2024年12月05日
+ * @version 最后修改于 2025年08月03日
  */
 public class HttpUtils {
 	
@@ -987,8 +987,6 @@ public class HttpUtils {
 	 */
 	private static <K,V>RequestBody getRequestBody(Map<File, String> fileMap, String fileKey, Map<K, V> params) throws FileNotFoundException {
 		MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-		/*附件部分*/
-		addFiles2Form(builder, fileMap, fileKey);
 
 		/*表单部分*/
 		if(!MapUtils.isEmpty(params)) {
@@ -1006,6 +1004,8 @@ public class HttpUtils {
 			}*/
 		}
 
+		/*附件部分*/
+		addFiles2Form(builder, fileMap, fileKey);
 		return  builder.build();
 	}
 
