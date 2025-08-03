@@ -18,7 +18,7 @@ import java.util.Optional;
  * </p>
  * 
  * @author ag777
- * @version create on 2018年03月30日,last modify at 2024年12月05日
+ * @version create on 2018年03月30日,last modify at 2025年08月03日
  */
 public class HttpEasy {
 	
@@ -390,15 +390,15 @@ public class HttpEasy {
 	/**
 	 * 
 	 * @param url url
-	 * @param fileMap 文件及其上传名称对应map
 	 * @param fileKey 请求体里对应的key
+	 * @param fileMap 文件及其上传名称对应map
 	 * @param paramMap 请求参数
 	 * @param headerMap 请求头
 	 * @return string
 	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
 	 * @throws FileNotFoundException 找不到文件
 	 */
-	public static <K, V>Optional<String> postMultiFiles(String url, Map<File, String> fileMap, String fileKey, Map<K, V> paramMap, Map<K,V> headerMap) throws IllegalArgumentException, FileNotFoundException  {
+	public static <K, V>Optional<String> postMultiFiles(String url, String fileKey, Map<File, String> fileMap, Map<K, V> paramMap, Map<K,V> headerMap) throws IllegalArgumentException, FileNotFoundException  {
 		Call call = HttpUtils.postMultiFilesByClient(null, url, fileMap, fileKey, paramMap, headerMap, null);
 		return callForStrForce(call);
 	}

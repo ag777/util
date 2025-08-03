@@ -15,7 +15,7 @@ import java.util.Map;
  * </p>
  * 
  * @author ag777
- * @version create on 2018年03月30日,last modify at 2024年12月05日
+ * @version create on 2018年03月30日,last modify at 2025年08月03日
  */
 public class HttpHelper {
 
@@ -285,15 +285,15 @@ public class HttpHelper {
 	/**
 	 * post请求带附件
 	 * @param url url
-	 * @param fileMap 文件及其上传名称对应map
 	 * @param fileKey 请求体里对应的key
+	 * @param fileMap 文件及其上传名称对应map
 	 * @param params params
 	 * @param headerMap headerMap
 	 * @return MyCall
 	 * @throws IllegalArgumentException IllegalArgumentException
 	 * @throws FileNotFoundException FileNotFoundException
 	 */
-	public <K, V> MyCall postMultiFiles(String url, Map<File, String> fileMap, String fileKey, Map<K, V> params, Map<K, V> headerMap) throws IllegalArgumentException, FileNotFoundException {
+	public <K, V> MyCall postMultiFiles(String url, String fileKey, Map<File, String> fileMap, Map<K, V> params, Map<K, V> headerMap) throws IllegalArgumentException, FileNotFoundException {
 		Call call = HttpUtils.postMultiFilesByClient(client, url, fileMap, fileKey, params, headerMap, tag);
 		return new MyCall(call);
 	}
