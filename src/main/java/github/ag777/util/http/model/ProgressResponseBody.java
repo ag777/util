@@ -14,17 +14,6 @@ import java.io.IOException;
  */
 public class ProgressResponseBody extends ResponseBody {
 
-    //回调接口
-    public interface ProgressListener{
-        /**
-         * @param curRead 已经读取的字节数
-         * @param contentLength 响应总长度
-         * @param bytesRead 当前读取字节数
-         * @param done 是否读取完毕
-         */
-        void update(long curRead,long contentLength, long bytesRead, boolean done);
-    }
-
     private final ResponseBody responseBody;
     private final ProgressListener progressListener;
     private BufferedSource bufferedSource;

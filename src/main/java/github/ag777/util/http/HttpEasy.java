@@ -1,6 +1,6 @@
 package github.ag777.util.http;
 
-import github.ag777.util.http.model.ProgressResponseBody;
+import github.ag777.util.http.model.ProgressListener;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -386,6 +386,28 @@ public class HttpEasy {
 		Call call = HttpUtils.postMultiFilesByClient(null, url, fileKey, files, paramMap, headerMap, null);
 		return callForStrForce(call);
 	}
+
+	/**
+	 * 向接口提交表单并附带文件(支持一次多个)，带上传进度监听
+	 * <p>
+	 * 	不论接口返回是否是200都去获取返回字符串
+	 * </p>
+	 *
+	 * @param url url
+	 * @param fileKey 文件对应的key
+	 * @param files 文件
+	 * @param paramMap 请求参数
+	 * @param headerMap 请求头
+	 * @param listener 上传进度监听
+	 * @return string
+	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
+	 * @throws FileNotFoundException 找不到文件
+	 */
+    public static <K, V>Optional<String> postMultiFiles(String url, String fileKey, File[] files, Map<K, V> paramMap,
+            Map<K,V> headerMap, ProgressListener listener) throws IllegalArgumentException, FileNotFoundException  {
+		Call call = HttpUtils.postMultiFilesByClient(null, url, fileKey, files, paramMap, headerMap, null, listener);
+		return callForStrForce(call);
+	}
 	
 	/**
 	 * 
@@ -402,6 +424,28 @@ public class HttpEasy {
 		Call call = HttpUtils.postMultiFilesByClient(null, url, fileMap, fileKey, paramMap, headerMap, null);
 		return callForStrForce(call);
 	}
+
+	/**
+	 * 向接口提交表单并附带文件(支持一次多个)，带上传进度监听
+	 * <p>
+	 * 	不论接口返回是否是200都去获取返回字符串
+	 * </p>
+	 *
+	 * @param url url
+	 * @param fileKey 请求体里对应的key
+	 * @param fileMap 文件及其上传名称对应map
+	 * @param paramMap 请求参数
+	 * @param headerMap 请求头
+	 * @param listener 上传进度监听
+	 * @return string
+	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
+	 * @throws FileNotFoundException 找不到文件
+	 */
+    public static <K, V>Optional<String> postMultiFiles(String url, String fileKey, Map<File, String> fileMap, Map<K, V> paramMap,
+            Map<K,V> headerMap, ProgressListener listener) throws IllegalArgumentException, FileNotFoundException  {
+		Call call = HttpUtils.postMultiFilesByClient(null, url, fileMap, fileKey, paramMap, headerMap, null, listener);
+		return callForStrForce(call);
+	}
 	
 	/**
 	 * get请求获取文件流
@@ -416,7 +460,7 @@ public class HttpEasy {
 	 * @return io流,请自行实现读取操作
 	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
 	 */
-	public static <K, V>Optional<InputStream> downLoadForStream(String url, Map<K, V> paramMap, Map<K,V> headerMap, ProgressResponseBody.ProgressListener listener) throws IllegalArgumentException {
+    public static <K, V>Optional<InputStream> downLoadForStream(String url, Map<K, V> paramMap, Map<K,V> headerMap, ProgressListener listener) throws IllegalArgumentException {
 		OkHttpClient client = HttpUtils.builderWithProgress(null, listener).build();
 		Call call = HttpUtils.getByClient(client, url, paramMap, headerMap, null);
 		return callForInputStream(call);
@@ -437,7 +481,7 @@ public class HttpEasy {
 	 * @return 文件对象
 	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
 	 */
-	public static <K, V>Optional<File> downLoad(String url, Map<K, V> paramMap, Map<K,V> headerMap, String targetPath, ProgressResponseBody.ProgressListener listener) throws IllegalArgumentException {
+    public static <K, V>Optional<File> downLoad(String url, Map<K, V> paramMap, Map<K,V> headerMap, String targetPath, ProgressListener listener) throws IllegalArgumentException {
 		OkHttpClient client = HttpUtils.builderWithProgress(null, listener).build();
 		Call call = HttpUtils.getByClient(client, url, paramMap, headerMap, null);
 		return callForFile(call, targetPath);

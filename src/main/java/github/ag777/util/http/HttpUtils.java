@@ -2,9 +2,7 @@ package github.ag777.util.http;
 
 import github.ag777.util.file.FileUtils;
 import github.ag777.util.gson.GsonUtils;
-import github.ag777.util.http.model.MyCookieJar;
-import github.ag777.util.http.model.ProgressResponseBody;
-import github.ag777.util.http.model.SSLSocketClient;
+import github.ag777.util.http.model.*;
 import github.ag777.util.lang.ObjectUtils;
 import github.ag777.util.lang.StringUtils;
 import github.ag777.util.lang.collection.ArrayUtils;
@@ -225,7 +223,7 @@ public class HttpUtils {
 	 * @param listener listener
 	 * @return OkHttpClient.Builder
 	 */
-	public static OkHttpClient.Builder builderWithProgress(OkHttpClient.Builder builder, ProgressResponseBody.ProgressListener listener) {
+    public static OkHttpClient.Builder builderWithProgress(OkHttpClient.Builder builder, ProgressListener listener) {
 		if(builder == null) {
 			builder = client().newBuilder();
 		}
@@ -235,7 +233,7 @@ public class HttpUtils {
 						Response response = chain.proceed(chain.request());
 						//这里将ResponseBody包装成我们的ProgressResponseBody
 						return response.newBuilder()
-								.body(new ProgressResponseBody(response.body(),listener))
+                                .body(new ProgressResponseBody(response.body(),listener))
 								.build();
 					});
 		}
@@ -398,6 +396,31 @@ public class HttpUtils {
 	public static <K, V>Call postMultiFilesByClient(OkHttpClient client, String url, String fileKey, File[] files, Map<K, V> paramMap, Map<K, V> headerMap, Object tag) throws IllegalArgumentException, FileNotFoundException {
 		return postByClient(client, url, getRequestBody(fileKey, files, paramMap), getHeaders(headerMap), tag);
 	}
+
+    /**
+     * post请求带附件（支持上传进度监听）
+     * @param client client
+     * @param url url
+     * @param fileKey 文件对应的key
+     * @param files files
+     * @param paramMap paramMap
+     * @param headerMap headerMap
+     * @param tag tag
+     * @param listener 进度监听
+     * @return Call
+     * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
+     * @throws FileNotFoundException FileNotFoundException
+     */
+    public static <K, V> Call postMultiFilesByClient(OkHttpClient client, String url, String fileKey, File[] files,
+                                                     Map<K, V> paramMap, Map<K, V> headerMap, Object tag,
+                                                     ProgressListener listener)
+            throws IllegalArgumentException, FileNotFoundException {
+        RequestBody body = getRequestBody(fileKey, files, paramMap);
+        if (listener != null) {
+            body = new ProgressRequestBody(body, listener);
+        }
+        return postByClient(client, url, body, getHeaders(headerMap), tag);
+    }
 	
 	/**
 	 * post请求带附件
@@ -415,6 +438,31 @@ public class HttpUtils {
 	public static <K, V>Call postMultiFilesByClient(OkHttpClient client, String url, Map<File, String> fileMap, String fileKey, Map<K, V> paramMap, Map<K, V> headerMap, Object tag) throws IllegalArgumentException, FileNotFoundException {
 		return postByClient(client, url, getRequestBody(fileMap, fileKey, paramMap), getHeaders(headerMap), tag);
 	}
+
+    /**
+     * post请求带附件（支持上传进度监听）
+     * @param client client
+     * @param url url
+     * @param fileMap fileMap
+     * @param fileKey fileKey
+     * @param paramMap paramMap
+     * @param headerMap headerMap
+     * @param tag tag
+     * @param listener 进度监听
+     * @return Call
+     * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
+     * @throws FileNotFoundException FileNotFoundException
+     */
+    public static <K, V> Call postMultiFilesByClient(OkHttpClient client, String url, Map<File, String> fileMap,
+                                                     String fileKey, Map<K, V> paramMap, Map<K, V> headerMap,
+                                                     Object tag, ProgressListener listener)
+            throws IllegalArgumentException, FileNotFoundException {
+        RequestBody body = getRequestBody(fileMap, fileKey, paramMap);
+        if (listener != null) {
+            body = new ProgressRequestBody(body, listener);
+        }
+        return postByClient(client, url, body, getHeaders(headerMap), tag);
+    }
 
 	/*===================delete===========================*/
 

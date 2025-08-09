@@ -1,7 +1,7 @@
 package github.ag777.util.http;
 
 import github.ag777.util.http.model.MyCall;
-import github.ag777.util.http.model.ProgressResponseBody;
+import github.ag777.util.http.model.ProgressListener;
 import okhttp3.*;
 
 import java.io.File;
@@ -260,7 +260,7 @@ public class HttpHelper {
 	 * @return MyCall
 	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
 	 */
-	public <K, V> MyCall downLoad(String url, Map<K, V> paramMap, Map<K,V> headerMap, ProgressResponseBody.ProgressListener listener) throws IllegalArgumentException {
+    public <K, V> MyCall downLoad(String url, Map<K, V> paramMap, Map<K,V> headerMap, ProgressListener listener) throws IllegalArgumentException {
 		OkHttpClient client = HttpUtils.builderWithProgress(this.client.newBuilder(), listener).build();
 		Call call = HttpUtils.getByClient(client, url, paramMap, headerMap, tag);
 		return new MyCall(call);
@@ -281,6 +281,24 @@ public class HttpHelper {
 		Call call = HttpUtils.postMultiFilesByClient(client, url, fileKey, files, params, headerMap, tag);
 		return new MyCall(call);
 	}
+
+	/**
+	 * post请求带附件（支持上传进度监听）
+	 * @param url url
+	 * @param fileKey 文件对应的key
+	 * @param files files
+	 * @param params params
+	 * @param headerMap headerMap
+	 * @param listener 上传进度监听
+	 * @return MyCall
+	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
+	 * @throws FileNotFoundException FileNotFoundException
+	 */
+    public <K, V> MyCall postMultiFiles(String url, String fileKey, File[] files, Map<K, V> params,
+            Map<K, V> headerMap, ProgressListener listener) throws IllegalArgumentException, FileNotFoundException {
+		Call call = HttpUtils.postMultiFilesByClient(client, url, fileKey, files, params, headerMap, tag, listener);
+		return new MyCall(call);
+	}
 	
 	/**
 	 * post请求带附件
@@ -295,6 +313,24 @@ public class HttpHelper {
 	 */
 	public <K, V> MyCall postMultiFiles(String url, String fileKey, Map<File, String> fileMap, Map<K, V> params, Map<K, V> headerMap) throws IllegalArgumentException, FileNotFoundException {
 		Call call = HttpUtils.postMultiFilesByClient(client, url, fileMap, fileKey, params, headerMap, tag);
+		return new MyCall(call);
+	}
+
+	/**
+	 * post请求带附件（支持上传进度监听）
+	 * @param url url
+	 * @param fileKey 请求体里对应的key
+	 * @param fileMap 文件及其上传名称对应map
+	 * @param params params
+	 * @param headerMap headerMap
+	 * @param listener 上传进度监听
+	 * @return MyCall
+	 * @throws IllegalArgumentException IllegalArgumentException
+	 * @throws FileNotFoundException FileNotFoundException
+	 */
+    public <K, V> MyCall postMultiFiles(String url, String fileKey, Map<File, String> fileMap, Map<K, V> params,
+            Map<K, V> headerMap, ProgressListener listener) throws IllegalArgumentException, FileNotFoundException {
+		Call call = HttpUtils.postMultiFilesByClient(client, url, fileMap, fileKey, params, headerMap, tag, listener);
 		return new MyCall(call);
 	}
 }
