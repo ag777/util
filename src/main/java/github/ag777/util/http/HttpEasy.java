@@ -18,7 +18,7 @@ import java.util.Optional;
  * </p>
  * 
  * @author ag777
- * @version create on 2018年03月30日,last modify at 2025年08月03日
+ * @version create on 2018年03月30日,last modify at 2025年08月08日
  */
 public class HttpEasy {
 	
@@ -461,7 +461,7 @@ public class HttpEasy {
 	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
 	 */
     public static <K, V>Optional<InputStream> downLoadForStream(String url, Map<K, V> paramMap, Map<K,V> headerMap, ProgressListener listener) throws IllegalArgumentException {
-		OkHttpClient client = HttpUtils.builderWithProgress(null, listener).build();
+        OkHttpClient client = HttpUtils.builderWithDownloadProgress(null, listener).build();
 		Call call = HttpUtils.getByClient(client, url, paramMap, headerMap, null);
 		return callForInputStream(call);
 	}
@@ -482,7 +482,7 @@ public class HttpEasy {
 	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
 	 */
     public static <K, V>Optional<File> downLoad(String url, Map<K, V> paramMap, Map<K,V> headerMap, String targetPath, ProgressListener listener) throws IllegalArgumentException {
-		OkHttpClient client = HttpUtils.builderWithProgress(null, listener).build();
+        OkHttpClient client = HttpUtils.builderWithDownloadProgress(null, listener).build();
 		Call call = HttpUtils.getByClient(client, url, paramMap, headerMap, null);
 		return callForFile(call, targetPath);
 	}

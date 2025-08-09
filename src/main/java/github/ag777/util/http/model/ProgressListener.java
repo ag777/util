@@ -2,8 +2,10 @@ package github.ag777.util.http.model;
 
 /**
  * HTTP 上传/下载通用进度监听接口
- *
  * 计数均使用 long，与 OkHttp/IO 语义保持一致。
+ *
+ * @author ag777
+ * @version create on 2025年08月08日,last modify at 2025年08月08日
  */
 @FunctionalInterface
 public interface ProgressListener {

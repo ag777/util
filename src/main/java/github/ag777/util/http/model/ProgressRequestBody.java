@@ -12,7 +12,7 @@ import java.io.IOException;
  * 通过包装原始的 RequestBody，在写出过程中统计已写入字节数并回调进度。
  *
  * @author ag777
- * @version last modify at 2025年08月03日
+ * @version last modify at 2025年08月08日
  */
 public class ProgressRequestBody extends RequestBody {
 

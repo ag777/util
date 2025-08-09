@@ -237,6 +237,15 @@ public class MyCall {
 			return HttpUtils.responseInputStream(response);
 		}
 	}
+
+	/**
+	 * 发送请求并得到返回流（带进度监听）
+	 */
+	public Optional<InputStream> executeForInputStream(ProgressListener listener) throws SocketTimeoutException, IOException {
+		try (Response response = executeForResponse()) {
+			return HttpUtils.responseInputStream(response, listener);
+		}
+	}
 	
 	/**
 	 * 发送请求，并将请求流保存成本地文件
@@ -252,6 +261,15 @@ public class MyCall {
 	public  Optional<File> executeForFile(String targetPath) throws SocketTimeoutException, IOException {
 		try (Response response = executeForResponse()) {
 			return HttpUtils.responseFile(response, targetPath);
+		}
+	}
+
+	/**
+	 * 发送请求，并将请求流保存成本地文件（带进度监听）
+	 */
+	public  Optional<File> executeForFile(String targetPath, ProgressListener listener) throws SocketTimeoutException, IOException {
+		try (Response response = executeForResponse()) {
+			return HttpUtils.responseFile(response, targetPath, listener);
 		}
 	}
 

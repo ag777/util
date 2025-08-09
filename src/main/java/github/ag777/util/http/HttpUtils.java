@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
  * </ul>
  *
  * @author ag777
- * @version 最后修改于 2025年08月03日
+ * @version 最后修改于 2025年08月08日
  */
 public class HttpUtils {
 	
@@ -219,11 +219,15 @@ public class HttpUtils {
 
 	/**
 	 * 构建带进度监听的okhttpBuilder
+	 * <p>
+	 * 注意：为避免重复构建 OkHttpClient，请在执行阶段传入监听器：
+	 * MyCall.executeForInputStream(listener) 或 MyCall.executeForFile(path, listener)
+	 * </p>
 	 * @param builder builder
 	 * @param listener listener
 	 * @return OkHttpClient.Builder
 	 */
-    public static OkHttpClient.Builder builderWithProgress(OkHttpClient.Builder builder, ProgressListener listener) {
+    public static OkHttpClient.Builder builderWithDownloadProgress(OkHttpClient.Builder builder, ProgressListener listener) {
 		if(builder == null) {
 			builder = client().newBuilder();
 		}
@@ -844,6 +848,28 @@ public class HttpUtils {
 		}
 		throw new IOException(response.code()+"||"+response.message());
 	}
+
+    /**
+     * 发送请求并得到返回流（支持下载进度监听）
+     * 只有 response.isSuccessful() 时返回，否则抛异常
+     */
+    @SuppressWarnings("resource")
+    public static Optional<InputStream> responseInputStream(Response response, ProgressListener listener) throws IOException {
+        if (response == null) {
+            return Optional.empty();
+        }
+        if (response.isSuccessful()) {
+            ResponseBody body = response.body();
+            if (body == null) {
+                return Optional.empty();
+            }
+            if (listener == null) {
+                return Optional.of(body.byteStream());
+            }
+            return Optional.of(new ProgressResponseBody(body, listener).byteStream());
+        }
+        throw new IOException(response.code()+"||"+response.message());
+    }
 	
 	/**
 	 * 发送请求，并将请求流保存成本地文件
@@ -869,6 +895,23 @@ public class HttpUtils {
 		}
 		return Optional.empty();
 	}
+
+    /**
+     * 发送请求并将返回流保存为文件（支持下载进度监听）
+     */
+    public static Optional<File> responseFile(Response response, String targetPath, ProgressListener listener) throws IOException {
+        if (response == null) {
+            return Optional.empty();
+        }
+        Optional<InputStream> in = responseInputStream(response, listener);
+        if (in.isPresent()) {
+            File file = FileUtils.write(in.get(), targetPath);
+            if (file.exists() && file.isFile()) {
+                return Optional.of(file);
+            }
+        }
+        return Optional.empty();
+    }
 
 	/**
 	 *

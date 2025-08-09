@@ -15,7 +15,7 @@ import java.util.Map;
  * </p>
  * 
  * @author ag777
- * @version create on 2018年03月30日,last modify at 2025年08月03日
+ * @version create on 2018年03月30日,last modify at 2025年08月08日
  */
 public class HttpHelper {
 
@@ -253,6 +253,8 @@ public class HttpHelper {
 	
 	/**
 	 * 带进度条的文件下载
+	 * 注意：为避免重复构建 OkHttpClient，请在执行阶段传入监听器：
+	 * MyCall.executeForInputStream(listener) 或 MyCall.executeForFile(path, listener)
 	 * @param url url
 	 * @param paramMap paramMap
 	 * @param headerMap headerMap
@@ -260,11 +262,10 @@ public class HttpHelper {
 	 * @return MyCall
 	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
 	 */
-    public <K, V> MyCall downLoad(String url, Map<K, V> paramMap, Map<K,V> headerMap, ProgressListener listener) throws IllegalArgumentException {
-		OkHttpClient client = HttpUtils.builderWithProgress(this.client.newBuilder(), listener).build();
-		Call call = HttpUtils.getByClient(client, url, paramMap, headerMap, tag);
-		return new MyCall(call);
-	}
+    public <K, V> MyCall downLoad(String url, Map<K, V> paramMap, Map<K,V> headerMap) throws IllegalArgumentException {
+        Call call = HttpUtils.getByClient(this.client, url, paramMap, headerMap, tag);
+        return new MyCall(call);
+    }
 	
 	/**
 	 * post请求带附件

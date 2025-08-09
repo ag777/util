@@ -10,7 +10,7 @@ import java.io.IOException;
  * okhttp下载文件进度监听辅助类
  * 
  * @author ag777
- * @version last modify at 2018年04月04日
+ * @version last modify at 2025年08月08日
  */
 public class ProgressResponseBody extends ResponseBody {
 
