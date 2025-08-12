@@ -15,6 +15,10 @@ import okhttp3.*;
 import okhttp3.Request.Builder;
 
 import javax.net.ssl.X509TrustManager;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -53,7 +57,7 @@ import java.util.concurrent.TimeUnit;
  * </ul>
  *
  * @author ag777
- * @version 最后修改于 2024年12月05日
+ * @version 最后修改于 2025年08月12日
  */
 public class HttpUtils {
 	
@@ -676,6 +680,87 @@ public class HttpUtils {
 		}
 		Optional<String> str = responseStrForce(response);
 		return str.map(s -> GsonUtils.get().toMap(s));
+	}
+
+	/**
+	 * 发送请求并转为为JsonObject对象
+	 * <p>
+	 * 只有response.isSuccessful()时才有返回,否则抛出异常
+	 * 	转化失败会也会抛出异常
+	 * </p>
+	 *
+	 * @param response response
+	 * @return 返回JsonObject对象
+	 * @throws IOException IOException
+	 * @throws GsonSyntaxException json转化异常
+	 */
+	public static Optional<JsonObject> responseJsonObject(Response response) throws IOException, GsonSyntaxException {
+		if(response == null) {
+			return Optional.empty();
+		}
+		Optional<String> json = responseStr(response);
+		if (json.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(GsonUtils.toJsonObjectWithException(json.get()));
+	}
+
+	/**
+	 * 发送请求并转为为JsonObject对象
+	 * <p>
+	 *  不论返回什么强制转化为JsonObject
+	 * </p>
+	 *
+	 * @param response response
+	 * @return 返回json对象
+	 * @throws IOException IOException
+	 * @throws GsonSyntaxException json转化异常
+	 */
+	public static Optional<JsonObject> responseJsonObjectForce(Response response) throws IOException, GsonSyntaxException {
+		if(response == null) {
+			return Optional.empty();
+		}
+		Optional<String> json = responseStrForce(response);
+		return Optional.of(GsonUtils.toJsonObjectWithException(json.get()));
+	}
+
+	/**
+	 * 发送请求并转为为JsonArray对象
+	 * <p>
+	 * 只有response.isSuccessful()时才有返回,否则抛出异常
+	 * 	转化失败会也会抛出异常
+	 * </p>
+	 *
+	 * @param response response
+	 * @return 返回JsonArray对象
+	 * @throws IOException IOException
+	 * @throws GsonSyntaxException json转化异常
+	 */
+	public static Optional<JsonArray> responseJsonArray(Response response) throws IOException, GsonSyntaxException {
+		if(response == null) {
+			return Optional.empty();
+		}
+		Optional<String> json = responseStr(response);
+		return Optional.of(GsonUtils.toJsonArrayWithException(json.get()));
+	}
+
+	/**
+	 * 发送请求并转为为JsonArray对象
+	 * <p>
+	 *  不论返回什么强制转化为JsonArray
+	 * </p>
+	 *
+	 * @param response response
+	 * @return 返回JsonArray对象
+	 * @throws IOException IOException
+	 * @throws GsonSyntaxException json转化异常
+	 */
+	public static Optional<JsonArray> responseJsonArrayForce(Response response) throws IOException, GsonSyntaxException {
+		if(response == null) {
+			return Optional.empty();
+		}
+		Optional<String> json = responseStrForce(response);
+		return Optional.of(GsonUtils.toJsonArrayWithException(json.get()));
 	}
 	
 	/**
