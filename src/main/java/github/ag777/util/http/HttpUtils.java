@@ -2,9 +2,7 @@ package github.ag777.util.http;
 
 import github.ag777.util.file.FileUtils;
 import github.ag777.util.gson.GsonUtils;
-import github.ag777.util.http.model.MyCookieJar;
-import github.ag777.util.http.model.ProgressResponseBody;
-import github.ag777.util.http.model.SSLSocketClient;
+import github.ag777.util.http.model.*;
 import github.ag777.util.lang.ObjectUtils;
 import github.ag777.util.lang.StringUtils;
 import github.ag777.util.lang.collection.ArrayUtils;
@@ -225,11 +223,15 @@ public class HttpUtils {
 
 	/**
 	 * 构建带进度监听的okhttpBuilder
+	 * <p>
+	 * 注意：为避免重复构建 OkHttpClient，请在执行阶段传入监听器：
+	 * MyCall.executeForInputStream(listener) 或 MyCall.executeForFile(path, listener)
+	 * </p>
 	 * @param builder builder
 	 * @param listener listener
 	 * @return OkHttpClient.Builder
 	 */
-	public static OkHttpClient.Builder builderWithProgress(OkHttpClient.Builder builder, ProgressResponseBody.ProgressListener listener) {
+    public static OkHttpClient.Builder builderWithDownloadProgress(OkHttpClient.Builder builder, ProgressListener listener) {
 		if(builder == null) {
 			builder = client().newBuilder();
 		}
@@ -239,7 +241,7 @@ public class HttpUtils {
 						Response response = chain.proceed(chain.request());
 						//这里将ResponseBody包装成我们的ProgressResponseBody
 						return response.newBuilder()
-								.body(new ProgressResponseBody(response.body(),listener))
+                                .body(new ProgressResponseBody(response.body(),listener))
 								.build();
 					});
 		}
@@ -402,6 +404,31 @@ public class HttpUtils {
 	public static <K, V>Call postMultiFilesByClient(OkHttpClient client, String url, String fileKey, File[] files, Map<K, V> paramMap, Map<K, V> headerMap, Object tag) throws IllegalArgumentException, FileNotFoundException {
 		return postByClient(client, url, getRequestBody(fileKey, files, paramMap), getHeaders(headerMap), tag);
 	}
+
+    /**
+     * post请求带附件（支持上传进度监听）
+     * @param client client
+     * @param url url
+     * @param fileKey 文件对应的key
+     * @param files files
+     * @param paramMap paramMap
+     * @param headerMap headerMap
+     * @param tag tag
+     * @param listener 进度监听
+     * @return Call
+     * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
+     * @throws FileNotFoundException FileNotFoundException
+     */
+    public static <K, V> Call postMultiFilesByClient(OkHttpClient client, String url, String fileKey, File[] files,
+                                                     Map<K, V> paramMap, Map<K, V> headerMap, Object tag,
+                                                     ProgressListener listener)
+            throws IllegalArgumentException, FileNotFoundException {
+        RequestBody body = getRequestBody(fileKey, files, paramMap);
+        if (listener != null) {
+            body = new ProgressRequestBody(body, listener);
+        }
+        return postByClient(client, url, body, getHeaders(headerMap), tag);
+    }
 	
 	/**
 	 * post请求带附件
@@ -419,6 +446,31 @@ public class HttpUtils {
 	public static <K, V>Call postMultiFilesByClient(OkHttpClient client, String url, Map<File, String> fileMap, String fileKey, Map<K, V> paramMap, Map<K, V> headerMap, Object tag) throws IllegalArgumentException, FileNotFoundException {
 		return postByClient(client, url, getRequestBody(fileMap, fileKey, paramMap), getHeaders(headerMap), tag);
 	}
+
+    /**
+     * post请求带附件（支持上传进度监听）
+     * @param client client
+     * @param url url
+     * @param fileMap fileMap
+     * @param fileKey fileKey
+     * @param paramMap paramMap
+     * @param headerMap headerMap
+     * @param tag tag
+     * @param listener 进度监听
+     * @return Call
+     * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
+     * @throws FileNotFoundException FileNotFoundException
+     */
+    public static <K, V> Call postMultiFilesByClient(OkHttpClient client, String url, Map<File, String> fileMap,
+                                                     String fileKey, Map<K, V> paramMap, Map<K, V> headerMap,
+                                                     Object tag, ProgressListener listener)
+            throws IllegalArgumentException, FileNotFoundException {
+        RequestBody body = getRequestBody(fileMap, fileKey, paramMap);
+        if (listener != null) {
+            body = new ProgressRequestBody(body, listener);
+        }
+        return postByClient(client, url, body, getHeaders(headerMap), tag);
+    }
 
 	/*===================delete===========================*/
 
@@ -881,6 +933,28 @@ public class HttpUtils {
 		}
 		throw new IOException(response.code()+"||"+response.message());
 	}
+
+    /**
+     * 发送请求并得到返回流（支持下载进度监听）
+     * 只有 response.isSuccessful() 时返回，否则抛异常
+     */
+    @SuppressWarnings("resource")
+    public static Optional<InputStream> responseInputStream(Response response, ProgressListener listener) throws IOException {
+        if (response == null) {
+            return Optional.empty();
+        }
+        if (response.isSuccessful()) {
+            ResponseBody body = response.body();
+            if (body == null) {
+                return Optional.empty();
+            }
+            if (listener == null) {
+                return Optional.of(body.byteStream());
+            }
+            return Optional.of(new ProgressResponseBody(body, listener).byteStream());
+        }
+        throw new IOException(response.code()+"||"+response.message());
+    }
 	
 	/**
 	 * 发送请求，并将请求流保存成本地文件
@@ -906,6 +980,23 @@ public class HttpUtils {
 		}
 		return Optional.empty();
 	}
+
+    /**
+     * 发送请求并将返回流保存为文件（支持下载进度监听）
+     */
+    public static Optional<File> responseFile(Response response, String targetPath, ProgressListener listener) throws IOException {
+        if (response == null) {
+            return Optional.empty();
+        }
+        Optional<InputStream> in = responseInputStream(response, listener);
+        if (in.isPresent()) {
+            File file = FileUtils.write(in.get(), targetPath);
+            if (file.exists() && file.isFile()) {
+                return Optional.of(file);
+            }
+        }
+        return Optional.empty();
+    }
 
 	/**
 	 *
@@ -1072,8 +1163,6 @@ public class HttpUtils {
 	 */
 	private static <K,V>RequestBody getRequestBody(Map<File, String> fileMap, String fileKey, Map<K, V> params) throws FileNotFoundException {
 		MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-		/*附件部分*/
-		addFiles2Form(builder, fileMap, fileKey);
 
 		/*表单部分*/
 		if(!MapUtils.isEmpty(params)) {
@@ -1091,6 +1180,8 @@ public class HttpUtils {
 			}*/
 		}
 
+		/*附件部分*/
+		addFiles2Form(builder, fileMap, fileKey);
 		return  builder.build();
 	}
 

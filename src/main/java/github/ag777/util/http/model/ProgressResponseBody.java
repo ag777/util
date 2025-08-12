@@ -10,20 +10,9 @@ import java.io.IOException;
  * okhttp下载文件进度监听辅助类
  * 
  * @author ag777
- * @version last modify at 2018年04月04日
+ * @version last modify at 2025年08月08日
  */
 public class ProgressResponseBody extends ResponseBody {
-
-    //回调接口
-    public interface ProgressListener{
-        /**
-         * @param curRead 已经读取的字节数
-         * @param contentLength 响应总长度
-         * @param bytesRead 当前读取字节数
-         * @param done 是否读取完毕
-         */
-        void update(long curRead,long contentLength, long bytesRead, boolean done);
-    }
 
     private final ResponseBody responseBody;
     private final ProgressListener progressListener;

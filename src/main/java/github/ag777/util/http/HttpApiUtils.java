@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import github.ag777.util.file.FileUtils;
 import github.ag777.util.gson.GsonUtils;
 import github.ag777.util.http.model.MyCall;
+import github.ag777.util.http.model.ProgressListener;
 import github.ag777.util.lang.IOUtils;
 import github.ag777.util.lang.exception.model.GsonSyntaxException;
 import okhttp3.Response;
@@ -220,6 +221,38 @@ public class HttpApiUtils {
     }
 
     /**
+     * 发送请求并保存响应文件（带下载进度监听）
+     * 
+     * @param <E> 抛出异常类型
+     * @param call 请求
+     * @param apiName 接口名
+     * @param targetPath 本地存储路径
+     * @param listener 下载进度监听
+     * @param toException 处理其它异常
+     * @param onHttpErr 处理Http异常
+     * @return 文件
+     * @throws E 异常
+     * @throws SocketTimeoutException socket超时
+     * @throws ConnectException 连接异常
+     */
+    public static <E extends Exception> File executeForFile(MyCall call, String apiName, String targetPath,
+                                                            ProgressListener listener,
+                                                            BiFunction<String, Throwable, E> toException,
+                                                            Function<Response, E> onHttpErr)
+            throws E, SocketTimeoutException, ConnectException {
+        InputStream in = executeForInputStream(call, apiName, listener, toException, onHttpErr);
+        try {
+            File file = FileUtils.write(in, targetPath);
+            if(file.exists() && file.isFile()) {
+                return file;
+            }
+            throw toException.apply("转写"+apiName+"返回异常,转写文件不存在", null);
+        } catch (IOException e) {
+            throw toException.apply("转写"+apiName+"返回出现io异常", e);
+        }
+    }
+
+    /**
      * 发送请求并获取响应流
      * @param call 请求
      * @param apiName 接口名
@@ -235,6 +268,36 @@ public class HttpApiUtils {
         Response res = executeForResponse(call, apiName, toException, onHttpErr);
         try {
             Optional<InputStream> temp = HttpUtils.responseInputStream(res);
+            if (temp.isEmpty()) {
+                throw toException.apply(apiName+"返回为空", null);
+            }
+            return temp.get();
+        } catch (IOException e) {
+            throw toException.apply("读取"+apiName+"返回出现io异常", e);
+        }
+    }
+
+    /**
+     * 发送请求并获取响应流（带下载进度监听）
+     * @param <E> 抛出异常类型
+     * @param call 请求
+     * @param apiName 接口名
+     * @param listener 下载进度监听
+     * @param toException 处理其它异常
+     * @param onHttpErr 处理Http异常
+     * @return 对端返回的输入流
+     * @throws E 异常
+     * @throws SocketTimeoutException socket超时
+     * @throws ConnectException 连接异常
+     */
+    public static <E extends Exception>InputStream executeForInputStream(MyCall call, String apiName,
+                                                                         ProgressListener listener,
+                                                                         BiFunction<String, Throwable, E> toException,
+                                                                         Function<Response, E> onHttpErr)
+            throws E, SocketTimeoutException, ConnectException {
+        Response res = executeForResponse(call, apiName, toException, onHttpErr);
+        try {
+            Optional<InputStream> temp = HttpUtils.responseInputStream(res, listener);
             if (temp.isEmpty()) {
                 throw toException.apply(apiName+"返回为空", null);
             }
