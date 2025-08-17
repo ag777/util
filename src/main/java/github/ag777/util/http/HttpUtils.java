@@ -266,7 +266,13 @@ public class HttpUtils {
 	
 	/*===================GET请求===========================*/
 	/**
-	 * 关闭所有客户端
+	 * 关闭所有客户端（完全销毁，释放所有资源）
+	 * <p>
+	 * 执行完整的关闭流程：
+	 * 1. 取消所有正在进行的请求
+	 * 2. 清理连接池中的所有空闲连接  
+	 * 3. 强制关闭调度器的执行服务，立即阻止新请求的调度
+	 * </p>
 	 * @param clients 客户端
 	 */
 	public static void closeAll(OkHttpClient... clients) {
@@ -274,10 +280,18 @@ public class HttpUtils {
 			return;
 		}
 		for (OkHttpClient client : clients) {
-			// 取消所有正在进行的请求
+			// 1. 取消所有正在进行的请求
 			client.dispatcher().cancelAll();
-			// 清理连接池中的所有空闲连接
+			// 2. 清理连接池中的所有空闲连接
+			// evictAll() 的作用：
+			// - 立即关闭连接池中的所有空闲连接
+			// - 释放这些连接占用的系统资源（socket、内存等）
+			// - 清理连接池的内部状态
+			// - 注意：只影响空闲连接，不会中断正在使用的连接
 			client.connectionPool().evictAll();
+			// 3. 强制关闭调度器的执行服务，立即阻止新请求调度
+			// shutdownNow() 会立即尝试中断正在执行的任务，比 shutdown() 更快
+			client.dispatcher().executorService().shutdownNow();
 		}
 	}
 	
