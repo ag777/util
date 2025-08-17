@@ -169,6 +169,25 @@ public class HttpUtils {
 	}
 	
 	/**
+	 * 配置OkHttpClient.Builder使每次请求都不复用连接（即在请求头中添加"Connection: close"）
+	 * @param builder OkHttpClient.Builder
+	 * @return OkHttpClient.Builder
+	 */
+	public static OkHttpClient.Builder builderWithNoConnectionReuse(OkHttpClient.Builder builder) {
+		if(builder == null) {
+			builder = defaultBuilder();
+		}
+		builder.addInterceptor(chain -> {
+			Request request = chain.request()
+					.newBuilder()
+					.header("Connection", "close")
+					.build();
+			return chain.proceed(request);
+		});
+		return builder;
+	}
+
+	/**
 	 * 构建带网络拦截器的okhttpBuilder
 	 * <p>
 	 * 能够详尽地追踪访问链接的重定向。
