@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
  * </ul>
  *
  * @author ag777
- * @version 最后修改于 2025年08月17日
+ * @version 最后修改于 2025年08月18日
  */
 public class HttpUtils {
 	
@@ -169,7 +169,7 @@ public class HttpUtils {
 	}
 	
 	/**
-	 * 配置OkHttpClient.Builder使每次请求都不复用连接（即在请求头中添加"Connection: close"）
+	 * 配置OkHttpClient.Builder使每次请求都不复用连接（通过禁用连接池实现）
 	 * @param builder OkHttpClient.Builder
 	 * @return OkHttpClient.Builder
 	 */
@@ -177,13 +177,9 @@ public class HttpUtils {
 		if(builder == null) {
 			builder = defaultBuilder();
 		}
-		builder.addInterceptor(chain -> {
-			Request request = chain.request()
-					.newBuilder()
-					.header("Connection", "close")
-					.build();
-			return chain.proceed(request);
-		});
+		// 设置连接池参数：最大空闲连接数为0，保持活动时间为0秒
+		// 这样每次请求后连接都会被立即关闭，不会被复用
+		builder.connectionPool(new ConnectionPool(0, 0, TimeUnit.SECONDS));
 		return builder;
 	}
 
