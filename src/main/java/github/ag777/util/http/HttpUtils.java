@@ -266,6 +266,22 @@ public class HttpUtils {
 	
 	/*===================GET请求===========================*/
 	/**
+	 * 关闭所有客户端
+	 * @param clients 客户端
+	 */
+	public static void closeAll(OkHttpClient... clients) {
+		if (clients == null) {
+			return;
+		}
+		for (OkHttpClient client : clients) {
+			// 取消所有正在进行的请求
+			client.dispatcher().cancelAll();
+			// 清理连接池中的所有空闲连接
+			client.connectionPool().evictAll();
+		}
+	}
+	
+	/**
 	 * 取消所有请求
 	 * @param clients 客户端
 	 */
@@ -274,6 +290,7 @@ public class HttpUtils {
 			return;
 		}
 		for (OkHttpClient client : clients) {
+			// 取消所有正在进行的请求
 			client.dispatcher().cancelAll();
 		}
 	}

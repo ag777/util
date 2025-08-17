@@ -15,7 +15,7 @@ import java.util.Map;
  * </p>
  * 
  * @author ag777
- * @version create on 2018年03月30日,last modify at 2025年08月08日
+ * @version create on 2018年03月30日,last modify at 2025年08月18日
  */
 public class HttpHelper {
 
@@ -85,6 +85,20 @@ public class HttpHelper {
 	 */
 	public static HttpHelper tag(Object tag) {
 		return new HttpHelper(null, tag);
+	}
+
+	/**
+	 * 关闭所有请求
+	 */
+	public void close() {
+		HttpUtils.closeAll(client);
+	}
+
+	/**
+	 * 取消所有请求
+	 */
+	public void cancel() {
+		HttpUtils.cancelAll(client, tag);
 	}
 
 	/**
