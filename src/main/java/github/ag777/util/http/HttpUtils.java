@@ -215,7 +215,7 @@ public class HttpUtils {
 	 */
 	public static OkHttpClient.Builder builderWithCookie(OkHttpClient.Builder builder) {
 		if(builder == null) {
-			builder = client().newBuilder();
+			builder = defaultBuilder();
 		}
 		return builder.cookieJar(new MyCookieJar());
 	}
@@ -229,7 +229,7 @@ public class HttpUtils {
 	 */
 	public static OkHttpClient.Builder builderWithProxy(OkHttpClient.Builder builder, String ip, int port) {
 		if(builder == null) {
-			builder = client().newBuilder();
+			builder = defaultBuilder();
 		}
 		return builder.proxy(
 				new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip, port))
@@ -248,7 +248,7 @@ public class HttpUtils {
 	 */
     public static OkHttpClient.Builder builderWithDownloadProgress(OkHttpClient.Builder builder, ProgressListener listener) {
 		if(builder == null) {
-			builder = client().newBuilder();
+			builder = defaultBuilder();
 		}
 		if(listener != null) {
 			return builder
