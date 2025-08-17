@@ -272,7 +272,6 @@ public class HttpHelper {
 	 * @param url url
 	 * @param paramMap paramMap
 	 * @param headerMap headerMap
-	 * @param listener listener
 	 * @return MyCall
 	 * @throws IllegalArgumentException 一般为url异常，比如没有http(s):\\的前缀
 	 */
