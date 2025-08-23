@@ -1,5 +1,7 @@
 package github.ag777.util.http;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import github.ag777.util.file.FileUtils;
 import github.ag777.util.gson.GsonUtils;
 import github.ag777.util.http.model.*;
@@ -13,10 +15,6 @@ import okhttp3.*;
 import okhttp3.Request.Builder;
 
 import javax.net.ssl.X509TrustManager;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -167,9 +165,11 @@ public class HttpUtils {
 		builder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(certificates));
 		return builder;
 	}
-	
+
 	/**
-	 * 配置OkHttpClient.Builder使每次请求都不复用连接（通过禁用连接池实现）
+	 * 配置OkHttpClient.Builder使每次请求都不复用连接（最彻底的方案）
+	 * 通过强制添加Connection: close请求头 + 拦截器双重保障
+	 * 这是最可靠的方案，即使在极高并发场景下也能保证每次使用新连接
 	 * @param builder OkHttpClient.Builder
 	 * @return OkHttpClient.Builder
 	 */
@@ -177,9 +177,60 @@ public class HttpUtils {
 		if(builder == null) {
 			builder = defaultBuilder();
 		}
-		// 设置连接池参数：最大空闲连接数为0，保持活动时间为0秒
-		// 这样每次请求后连接都会被立即关闭，不会被复用
-		builder.connectionPool(new ConnectionPool(0, 0, TimeUnit.SECONDS));
+
+		// 第一重保障：完全禁用连接池
+		builder.connectionPool(new ConnectionPool(0, 1, TimeUnit.NANOSECONDS));
+
+		// 第二重保障：添加应用拦截器强制添加Connection: close头
+		builder.addInterceptor(chain -> {
+			okhttp3.Request originalRequest = chain.request();
+			// 强制添加Connection: close头，确保服务端关闭连接
+			okhttp3.Request newRequest = originalRequest.newBuilder()
+					.header("Connection", "close")
+					.build();
+			return chain.proceed(newRequest);
+		});
+		
+		// 第三重保障：添加网络拦截器标记连接不可复用
+		builder.addNetworkInterceptor(chain -> {
+			okhttp3.Response response = chain.proceed(chain.request());
+			
+			// 尝试标记连接为不可复用
+			try {
+				// 获取响应的连接信息
+				java.lang.reflect.Field exchangeField = response.getClass().getDeclaredField("exchange");
+				exchangeField.setAccessible(true);
+				Object exchange = exchangeField.get(response);
+				
+				if (exchange != null) {
+					java.lang.reflect.Field connectionField = exchange.getClass().getDeclaredField("connection");
+					connectionField.setAccessible(true);
+					Object connection = connectionField.get(exchange);
+					
+					if (connection != null) {
+						// 标记连接不可复用
+						try {
+							java.lang.reflect.Method noNewExchangesMethod = connection.getClass().getMethod("noNewExchanges");
+							noNewExchangesMethod.invoke(connection);
+						} catch (Exception e) {
+							// 如果方法调用失败，尝试直接设置字段
+							try {
+								java.lang.reflect.Field noNewExchangesField = connection.getClass().getDeclaredField("noNewExchanges");
+								noNewExchangesField.setAccessible(true);
+								noNewExchangesField.setBoolean(connection, true);
+							} catch (Exception ex) {
+								// 所有方式都失败时忽略
+							}
+						}
+					}
+				}
+			} catch (Exception e) {
+				// 反射操作失败时静默处理，前两重保障仍然生效
+			}
+			
+			return response;
+		});
+		
 		return builder;
 	}
 
