@@ -2,7 +2,6 @@ package github.ag777.util.net;
 
 import github.ag777.util.lang.ObjectUtils;
 import github.ag777.util.lang.StringUtils;
-import github.ag777.util.lang.collection.ListUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
