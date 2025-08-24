@@ -51,7 +51,7 @@ import java.util.stream.Stream;
  * }</pre>
  *
  * @author ag777
- * @version  2025/08/24 20:33
+ * @version  2025/08/24 20:46
  */
 public class UriBuilder {
 
@@ -328,6 +328,34 @@ public class UriBuilder {
     public UriBuilder computeParamIfAbsent(String key, Function<String, String> remappingFunction) {
         if (!this.queryParams.containsKey(key)) {
             this.queryParams.put(key, convertValueToStrings(remappingFunction.apply(key)));
+        }
+        return this;
+    }
+
+    /**
+     * 设置一个查询参数，如果参数不存在。
+     *
+     * @param key 参数的键。
+     * @param value 参数的值，可以为 null。
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder setParamsIfAbsent(String key, Object value) {
+        if (!this.queryParams.containsKey(key)) {
+            this.queryParams.put(key, convertValueToStrings(value));
+        }
+        return this;
+    }
+
+    /**
+     * 设置一个查询参数，如果参数存在。
+     *
+     * @param key 参数的键。
+     * @param value 参数的值，可以为 null。
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder setParamsIfPresent(String key, Object value) {
+        if (this.queryParams.containsKey(key)) {
+            this.queryParams.put(key, convertValueToStrings(value));
         }
         return this;
     }
