@@ -339,7 +339,7 @@ public class UriBuilder {
      * @param value 参数的值，可以为 null。
      * @return 当前 {@code UriBuilder} 实例，用于链式调用。
      */
-    public UriBuilder setParamsIfAbsent(String key, Object value) {
+    public UriBuilder setParamIfAbsent(String key, Object value) {
         if (!this.queryParams.containsKey(key)) {
             this.queryParams.put(key, convertValueToStrings(value));
         }
@@ -353,7 +353,7 @@ public class UriBuilder {
      * @param value 参数的值，可以为 null。
      * @return 当前 {@code UriBuilder} 实例，用于链式调用。
      */
-    public UriBuilder setParamsIfPresent(String key, Object value) {
+    public UriBuilder setParamIfPresent(String key, Object value) {
         if (this.queryParams.containsKey(key)) {
             this.queryParams.put(key, convertValueToStrings(value));
         }
