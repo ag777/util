@@ -8,6 +8,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -49,8 +50,7 @@ import java.util.stream.Stream;
  * }</pre>
  *
  * @author ag777
- * @version 4.1
- * @since 2025.07
+ * @version  2025/08/24 20:20
  */
 public class UriBuilder {
 
@@ -254,6 +254,64 @@ public class UriBuilder {
         return this;
     }
 
+
+    /**
+     * 计算一个查询参数的值。
+     *
+     * @param key 参数的键。
+     * @param remappingFunction 计算函数。
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder computeParam(String key, BiFunction<String, String, String> remappingFunction) {
+        Objects.requireNonNull(key, "键不能为空");
+        String oldValue = getParam(key);
+
+        String newValue = remappingFunction.apply(key, oldValue);
+        if (newValue == null) {
+            // delete mapping
+            if (oldValue != null || this.queryParams.containsKey(key)) {
+                // something to remove
+                this.queryParams.remove(key);
+                return null;
+            } else {
+                // nothing to do. Leave things as they were.
+                return null;
+            }
+        } else {
+            // add or replace old mapping
+            this.queryParams.put(key, convertValueToStrings(newValue));
+            return this;
+        }
+    }
+
+    /**
+     * 计算一个查询参数的值，如果参数存在。
+     *
+     * @param key 参数的键。
+     * @param remappingFunction 计算函数。
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder computeParamIfPresent(String key, BiFunction<String, String, String> remappingFunction) {
+        if (this.queryParams.containsKey(key)) {
+            computeParam(key, remappingFunction);
+        }
+        return this;
+    }
+
+    /**
+     * 计算一个查询参数的值，如果参数不存在。
+     *
+     * @param key 参数的键。
+     * @param remappingFunction 计算函数。
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder computeParamIfAbsent(String key, BiFunction<String, String, String> remappingFunction) {
+        if (!this.queryParams.containsKey(key)) {
+            computeParam(key, remappingFunction);
+        }
+        return this;
+    }
+
     /**
      * 设置一个查询参数，替换该键已有的任何值。
      * <p>
@@ -274,6 +332,21 @@ public class UriBuilder {
     }
 
     /**
+     * 设置一个查询参数，如果条件为 true，则替换该键已有的任何值。
+     *
+     * @param condition 条件。
+     * @param key 参数的键。不能为空。
+     * @param value 参数的值，可以为 null。
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder setParam(boolean condition, String key, Object value) {
+        if (condition) {
+            setParam(key, value);
+        }
+        return this;
+    }
+
+    /**
      * 添加一个或多个查询参数。
      * <p>
      * 如果传入的是集合或数组，其所有元素都将被添加为该键的值。
@@ -286,6 +359,21 @@ public class UriBuilder {
     public UriBuilder addParam(String key, Object value) {
         Objects.requireNonNull(key, "键不能为空");
         this.queryParams.computeIfAbsent(key, k -> new ArrayList<>()).addAll(convertValueToStrings(value));
+        return this;
+    }
+
+    /**
+     * 添加一个或多个查询参数，如果条件为 true，则添加该键的值。
+     *
+     * @param condition 条件。
+     * @param key 参数的键。不能为空。
+     * @param value 参数的值，可以为 null。
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder addParam(boolean condition, String key, Object value) {
+        if (condition) {
+            addParam(key, value);
+        }
         return this;
     }
 
@@ -318,6 +406,20 @@ public class UriBuilder {
      */
     public UriBuilder removeParam(String key) {
         this.queryParams.remove(key);
+        return this;
+    }
+
+    /**
+     * 移除指定键的查询参数，如果条件为 true。
+     *
+     * @param condition 条件。
+     * @param key 要移除的参数的键。
+     * @return 当前 {@code UriBuilder} 实例，用于链式调用。
+     */
+    public UriBuilder removeParam(boolean condition, String key) {
+        if (condition) {
+            removeParam(key);
+        }
         return this;
     }
 
