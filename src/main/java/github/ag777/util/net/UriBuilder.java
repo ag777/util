@@ -1,6 +1,8 @@
 package github.ag777.util.net;
 
 import github.ag777.util.lang.ObjectUtils;
+import github.ag777.util.lang.StringUtils;
+import github.ag777.util.lang.collection.ListUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,7 +52,7 @@ import java.util.stream.Stream;
  * }</pre>
  *
  * @author ag777
- * @version  2025/08/24 20:20
+ * @version  2025/08/24 20:33
  */
 public class UriBuilder {
 
@@ -128,6 +130,12 @@ public class UriBuilder {
 
     // --- 解析和构建 --- 
 
+    /**
+     * 解析查询参数。
+     *
+     * @param query 查询参数。
+     * @param params 参数的 Map。
+     */
     private static void parseQuery(String query, Map<String, List<String>> params) {
         if (query == null || query.isEmpty()) {
             return;
@@ -254,6 +262,19 @@ public class UriBuilder {
         return this;
     }
 
+    /**
+     * 检查是否存在指定的查询参数。
+     *
+     * @param key 参数的键。
+     * @return 如果参数存在，则返回 {@code true}，否则返回 {@code false}。
+     */
+    public boolean containsParam(String key) {
+        if (this.queryParams.containsKey(key)) {
+            String value = getParam(key);
+            return !StringUtils.isEmpty(value);
+        }
+        return false;
+    }
 
     /**
      * 计算一个查询参数的值。
@@ -305,9 +326,9 @@ public class UriBuilder {
      * @param remappingFunction 计算函数。
      * @return 当前 {@code UriBuilder} 实例，用于链式调用。
      */
-    public UriBuilder computeParamIfAbsent(String key, BiFunction<String, String, String> remappingFunction) {
+    public UriBuilder computeParamIfAbsent(String key, Function<String, String> remappingFunction) {
         if (!this.queryParams.containsKey(key)) {
-            computeParam(key, remappingFunction);
+            this.queryParams.put(key, convertValueToStrings(remappingFunction.apply(key)));
         }
         return this;
     }
