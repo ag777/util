@@ -27,11 +27,11 @@ import java.util.stream.Stream;
  * 文件操作工具类
  * 
  * @author ag777 <837915770@vip.qq.com>
- * @version create on 2020年08月04日,last modify at 2024年12月25日
+ * @version create on 2020年08月04日,last modify at 2025年09月15日
  */
 public class FileUtils {
-	public static final Pattern P_EXTENSION_LONG = Pattern.compile("(?<=\\.)[\\w\\d]{1,5}(.[\\w\\d]{1,5})*$");
-	public static final Pattern P_EXTENSION_SHORT = Pattern.compile("(?<=\\.)[\\w\\d]{1,5}$");
+	public static final Pattern P_EXTENSION_LONG = Pattern.compile("(?<=\\.)[\\w\\d]{1,5}(.[\\w\\d]{1,5})*$", Pattern.CASE_INSENSITIVE);
+	public static final Pattern P_EXTENSION_SHORT = Pattern.compile("(?<=\\.)[\\w\\d]{1,5}$", Pattern.CASE_INSENSITIVE);
 
     private static Charset FILE_WRITING_CHARSET = Charsets.UTF_8;
     private static Charset FILE_READING_CHARSET = Charsets.UTF_8;
@@ -114,7 +114,6 @@ public class FileUtils {
 	 * @return 替换后的文件名
 	 */
 	private static String replaceExtension(Pattern pattern, String fileName, String replacement) {
-		fileName = fileName.toLowerCase();
 		Matcher m = pattern.matcher(fileName);
 		if (!StringUtils.isEmpty(replacement)) { // 需要替换成新的后缀名
 			if (replacement.startsWith(".")) {
