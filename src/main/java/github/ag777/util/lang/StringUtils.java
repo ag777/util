@@ -420,7 +420,7 @@ public class StringUtils {
 		if(src == null) {
 			return null;
 		}
-        StringBuffer unicode = new StringBuffer();
+        StringBuilder unicode = new StringBuilder();
         for (int i = 0; i < src.length(); i++) {
             char c = src.charAt(i);  // 取出每一个字符
             unicode.append("\\u").append(Integer.toHexString(c));// 转换为unicode
