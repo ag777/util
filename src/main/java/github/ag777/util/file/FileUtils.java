@@ -305,7 +305,7 @@ public class FileUtils {
      * @param charset charset
      * @throws IOException IOException
      */
-    public static void readLinesByScaner(String filePath, Consumer<String> filter, Charset charset) throws IOException {
+    public static void readLinesByScanner(String filePath, Consumer<String> filter, Charset charset) throws IOException {
 		FileInputStream in = null;
 		Scanner sc = null;
 		try {
