@@ -3,7 +3,8 @@ package github.ag777.util.lang;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +22,7 @@ import java.util.regex.Pattern;
  * 
  * 
  * @author ag777
- * @version create on 2017年06月06日,last modify at 2022年11月24日
+ * @version create on 2017年06月06日,last modify at 2025年11月28日
  */
 public class RegexUtils {
 	
@@ -40,30 +41,45 @@ public class RegexUtils {
 	}
 
 	/**
-	 * 替换字符串
-	 * System.out.println(replace("ad?bc?", Pattern.compile("\\?"), (m, i)->m.group(0)+i)); => "ad?0bc?1"
-	 * @param src 字符串
-	 * @param p 正则
-	 * @param getReplacement (匹配到的部分，第几次匹配)->替换该部分的字符串
-	 * @return 替换完成的字符串
-	 */
-	public static String replace(String src, Pattern p, BiFunction<Matcher, Integer, String> getReplacement) {
-		if (StringUtils.isEmpty(src)) {
-			return src;
-		}
-		Matcher m = p.matcher(src);
-		StringBuilder sb = new StringBuilder();
-		int i = 0;
-		int index = 0;
-		while (m.find()) {
-			sb.append(src, index, m.start());
-			sb.append(getReplacement.apply(m, i));
-			index = m.end();
-			i++;
-		}
-		sb.append(src, index, src.length());
-		return sb.toString();
-	}
+     * 替换字符串 - 简化版本
+     * @param src 源字符串
+     * @param p 正则模式
+     * @param onReplace 对每个匹配执行的替换逻辑
+     * @return 替换后的字符串
+     */
+    public static String replace(String src, Pattern p, Function<Matcher, String> onReplace) {
+        StringBuilder sb = new StringBuilder();
+        replace(src, p, m -> sb.append(onReplace.apply(m)), sb::append);
+        return sb.toString();
+    }
+
+    /**
+     * 高级字符串处理 - 底层方法
+     * @param src 源字符串
+     * @param p 正则模式
+     * @param onReplace 对每个匹配执行的处理逻辑 (可为null)
+     * @param onText 对每个非匹配文本段执行的处理逻辑 (可为null)
+     */
+    public static void replace(String src, Pattern p, Consumer<Matcher> onReplace, Consumer<String> onText) {
+        if (StringUtils.isEmpty(src)) {
+            return;
+        }
+
+        Matcher m = p.matcher(src);
+        int index = 0;
+        while (m.find()) {
+            if (onText != null) {
+                onText.accept(src.substring(index, m.start()));
+            }
+            if (onReplace != null) {
+                onReplace.accept(m);
+            }
+            index = m.end();
+        }
+        if (onText != null) {
+            onText.accept(src.substring(index));
+        }
+    }
 
 	/**
 	 * 替换
