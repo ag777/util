@@ -1090,70 +1090,16 @@ public class DateUtils {
 	}
 
 	/**
-	 * 判断给定的时间是否不在目标时间之前(大等于)
-	 *
-	 * @param target   时间
-	 * @param compare  目标时间
-	 * @param template 时间格式模板
-	 * @return 时间是否不在目标时间之前(大等于)
-	 */
-	public static boolean isNotBefore(String target, String compare, String template) {
-		DateTime dt1 = toDateTime(target, template);
-		DateTime dt2 = toDateTime(compare, template);
-
-		Assert.notNull(dt1, "原始时间参数转换失败:"+target);
-		Assert.notNull(dt2, "对比时间参数转换失败:"+compare);
-		
-		return isNotBefore(dt1, dt2);
-	}
-
-	/**
-	 * 判断给定的时间是否不在目标时间之后(小等于)
-	 *
-	 * @param target   时间
-	 * @param compare  目标时间
-	 * @param template 时间格式模板
-	 * @return 时间是否不在目标时间之后(小等于)
-	 */
-	public static boolean isNotAfter(String target, String compare, String template) {
-		DateTime dt1 = toDateTime(target, template);
-		DateTime dt2 = toDateTime(compare, template);
-		
-		Assert.notNull(dt1, "原始时间参数转换失败:"+target);
-		Assert.notNull(dt2, "对比时间参数转换失败:"+compare);
-		
-		return isNotAfter(dt1, dt2);
-	}
-
-	/**
-	 * 判断给定的时间是否在目标时间之后
-	 *
-	 * @param target   时间
-	 * @param compare  目标时间
-	 * @param template 时间格式模板
-	 * @return 时间是否在目标时间之后
-	 */
-	public static boolean isAfter(String target, String compare, String template) {
-		DateTime dt1 = toDateTime(target, template);
-		DateTime dt2 = toDateTime(compare, template);
-
-		Assert.notNull(dt1, "原始时间参数转换失败:"+target);
-		Assert.notNull(dt2, "对比时间参数转换失败:"+compare);
-		
-		return isAfter(dt1, dt2);
-	}
-
-	/**
 	 * 判断给定的DateTime是否在目标DateTime之前
 	 *
 	 * @param target  DateTime对象
 	 * @param compare 目标DateTime对象
 	 * @return 时间是否在目标时间之前
 	 */
-	public static boolean isBefore(DateTime target,DateTime compare) {
+	public static <T extends Comparable<T>>boolean isBefore(T target, T compare) {
 		Assert.notNull(target, "原始时间参数不能为空");
 		Assert.notNull(compare, "对比时间参数不能为空");
-		
+
 		if(target.compareTo(compare) < 0) {	//1 大于 0 等于 -1 小于
 			return true;
 		}
@@ -1167,10 +1113,10 @@ public class DateUtils {
 	 * @param compare 目标DateTime对象
 	 * @return 时间是否在目标时间之后
 	 */
-	public static boolean isAfter(DateTime target,DateTime compare) {
+	public static <T extends Comparable<T>>boolean isAfter(T target, T compare) {
 		Assert.notNull(target, "原始时间参数不能为空");
 		Assert.notNull(compare, "对比时间参数不能为空");
-		
+
 		if (target.compareTo(compare) > 0) {	// 1 大于 0 等于 -1 小于
 			return true;
 		}
@@ -1184,14 +1130,8 @@ public class DateUtils {
 	 * @param compare 目标DateTime对象
 	 * @return 时间是否不在目标时间之前(大等于)
 	 */
-	public static boolean isNotBefore(DateTime target,DateTime compare) {
-		Assert.notNull(target, "原始时间参数不能为空");
-		Assert.notNull(compare, "对比时间参数不能为空");
-		
-		if (target.compareTo(compare) < 0) {	// 1 大于 0 等于 -1 小于
-			return false;
-		}
-		return true;
+	public static <T extends Comparable<T>>boolean isNotBefore(T target, T compare) {
+		return !isBefore(target, compare);
 	}
 
 	/**
@@ -1201,14 +1141,50 @@ public class DateUtils {
 	 * @param compare 目标DateTime对象
 	 * @return 时间是否不在目标时间之后(小等于)
 	 */
-	public static boolean isNotAfter(DateTime target,DateTime compare) {
-		Assert.notNull(target, "原始时间参数不能为空");
-		Assert.notNull(compare, "对比时间参数不能为空");
-		
-		if (target.compareTo(compare) > 0) {	//1 大于 0 等于 -1 小于
-			return false;
+	public static <T extends Comparable<T>>boolean isNotAfter(T target,T compare) {
+		return !isAfter(target, compare);
+	}
+
+	/**
+	 * 比较多个DateTime对象，返回较小的一个
+	 *
+	 * @param firstTime 第一个日期时间
+	 * @param others 其他日期时间
+	 * @return 较小的日期时间，如果所有参数都为null则返回null
+	 */
+	public static <T extends Comparable<T>>T min(T firstTime, T... others) {
+		if (others == null || others.length == 0) {
+			return firstTime;
 		}
-		return true;
+
+		T minDateTime = firstTime;
+		for (T otherTime : others) {
+			if (minDateTime==null || isBefore(otherTime, minDateTime)) {
+				minDateTime = otherTime;
+			}
+		}
+		return minDateTime;
+	}
+
+	/**
+	 * 比较多个DateTime对象，返回较大的一个
+	 *
+	 * @param firstTime 第一个日期时间
+	 * @param others 其他日期时间
+	 * @return 较大的日期时间，如果所有参数都为null则返回null
+	 */
+	public static <T extends ReadableInstant>T max(T firstTime, T... others) {
+		if (others == null || others.length == 0) {
+			return firstTime;
+		}
+
+		T maxDateTime = firstTime;
+		for (T otherTime : others) {
+			if (maxDateTime==null || isAfter(otherTime, maxDateTime)) {
+				maxDateTime = otherTime;
+			}
+		}
+		return maxDateTime;
 	}
 	
 	/**
