@@ -228,17 +228,7 @@ public class FileUtils {
      * @throws IOException IOException
      */
     public static String readText(String filePath, Charset charset) throws IOException {
-        try {
-        	if(charset == null) {
-        		charset = FILE_READING_CHARSET;
-        	}
-        	FileInputStream fis = new FileInputStream(filePath);
-            return IOUtils.readText(fis, charset);
-        } catch (FileNotFoundException ex) {
-            throw new IOException(StringUtils.concat("文件[", filePath, "]不存在"), ex);
-        } catch (IOException ex) {
-            throw new IOException(StringUtils.concat("读取文件[",filePath,"]时发生错误!"), ex);
-        }
+        return readText(new File(filePath), charset);
     }
     
     /**
