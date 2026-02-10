@@ -27,7 +27,7 @@ import java.util.stream.Stream;
  * 文件操作工具类
  * 
  * @author ag777 <837915770@vip.qq.com>
- * @version create on 2020年08月04日,last modify at 2025年09月15日
+ * @version create on 2020年08月04日,last modify at 2026年02月10日
  */
 public class FileUtils {
 	public static final Pattern P_EXTENSION_LONG = Pattern.compile("(?<=\\.)[\\w\\d]{1,5}(.[\\w\\d]{1,5})*$", Pattern.CASE_INSENSITIVE);
@@ -312,6 +312,19 @@ public class FileUtils {
 		} finally {
 			IOUtils.close(in, sc);
 		}
+	}
+
+	/**
+	 * 判断文件(夹)是否位于指定文件夹下（包含多级子目录）
+	 * @param file 文件或文件夹
+	 * @param directory 文件夹
+	 * @return 是否位于指定文件夹下(如果file就是对应的文件夹，也返回true)
+	 */
+	public static boolean isFileUnderDirectory(File file, File directory) {
+		Path filePath = file.toPath().toAbsolutePath().normalize();
+		Path dirPath = directory.toPath().toAbsolutePath().normalize();
+
+		return filePath.startsWith(dirPath);
 	}
     
     /**
