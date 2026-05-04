@@ -21,7 +21,15 @@ public class RandomUtils {
 	public static String uuid() {
 		return StringUtils.uuid();
 	}
-	
+
+	/**
+	 * 随机布尔值
+	 * @return 随机布尔值
+	 */
+	public static boolean rBoolean() {
+		return ThreadLocalRandom.current().nextBoolean();
+	}
+
 	/**
 	 * 产生随机整形数值[0,max),其中max为开区间
 	 * @param max max
