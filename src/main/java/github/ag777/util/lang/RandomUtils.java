@@ -26,7 +26,7 @@ public class RandomUtils {
 	 * 随机布尔值
 	 * @return 随机布尔值
 	 */
-	public static boolean rBoolean() {
+	public static boolean rBool() {
 		return ThreadLocalRandom.current().nextBoolean();
 	}
 
