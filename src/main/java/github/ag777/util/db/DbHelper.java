@@ -15,15 +15,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
-import java.util.Date;
 import java.util.*;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
  * 数据库操作辅助类
  * 
  * @author ag777
- * @version create on 2017年07月28日,last modify at 2024年05月18日
+ * @version create on 2017年07月28日,last modify at 2026年05月09日
  */
 public class DbHelper implements Closeable {
 	
@@ -920,7 +920,7 @@ public class DbHelper implements Closeable {
 	 * @return list
 	 */
 	public List<String> tableNameList() throws SQLException {
-		return tableNameList(null, "%", "%");
+		return tableNameList(conn.getCatalog(), null, "%");
 	}
 
 	/**
@@ -959,7 +959,7 @@ public class DbHelper implements Closeable {
      * @return list
      */
 	public List<ColumnPojo> columnList(String tableName) throws SQLException {
-		return columnList(null, "%", tableName);
+		return columnList(conn.getCatalog(), null, tableName);
 	}
 
 	/**
@@ -1145,7 +1145,7 @@ public class DbHelper implements Closeable {
 	public List<DBIPojo> dbiList(String tableName) {
 		List<DBIPojo> dbiList = new  ArrayList<>();
 		try {
-			ResultSet rs = conn.getMetaData().getIndexInfo(null, null, tableName, false, false);
+			ResultSet rs = conn.getMetaData().getIndexInfo(conn.getCatalog(), null, tableName, false, false);
 			Map<String, Integer> tempMap = new HashMap<>();
 			int index = -1;
 			while (rs.next()) {
@@ -1201,8 +1201,9 @@ public class DbHelper implements Closeable {
 	 * @throws SQLException	可能是连接数据库异常,所以不能确定是否存在表
 	 */
 	public boolean isTableExisted(String tableName) throws SQLException {
-		ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null);
-		return rs.next();
+		try (ResultSet rs = conn.getMetaData().getTables(conn.getCatalog(), null, escape(tableName), new String[] {"TABLE"})) {
+			return rs.next();
+		}
 	}
 	
 	/*----内部工具方法------*/
