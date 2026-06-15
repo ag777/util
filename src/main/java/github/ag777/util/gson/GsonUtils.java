@@ -7,6 +7,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import github.ag777.util.gson.adapter.LocalDateTimeAdapter;
+import github.ag777.util.gson.adapter.OptionalTypeAdapterFactory;
 import github.ag777.util.gson.model.TypeFactory;
 import github.ag777.util.lang.exception.model.GsonSyntaxException;
 
@@ -28,11 +29,14 @@ import java.util.function.Consumer;
  * GSON更新日志:<a href="https://github.com/google/gson/blob/master/CHANGELOG.md">...</a>
  *
  * @author ag777
- * @version create on 2017年05月27日,last modify at 2024年11月23日
+ * @version create on 2017年05月27日,last modify at 2026年06月15日
  */
 public class GsonUtils {
 	
 	private static volatile GsonUtils mInstance;
+	private static final Type MAP_STRING_OBJECT_TYPE = new TypeToken<Map<String, Object>>() {}.getType();
+	private static final Type LIST_OBJECT_TYPE = new TypeToken<List<Object>>() {}.getType();
+	private static final Type LIST_MAP_STRING_OBJECT_TYPE = new TypeToken<List<Map<String, Object>>>() {}.getType();
 
     private final GsonBuilder builder;
     private volatile Gson gson;
@@ -174,12 +178,17 @@ public class GsonUtils {
 		return new GsonBuilder()
 				.disableHtmlEscaping()	//html标签不转义 (避免符号被转义)
 				.setDateFormat("yyyy-MM-dd HH:mm:ss")	//序列化和反序化时将时间以此形式输出
+				.registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
 				.registerTypeAdapter(
-						new TypeToken<Map<String, Object>>() {}.getType(), 
+						MAP_STRING_OBJECT_TYPE,
 						objAdapter
 				)
 				.registerTypeAdapter(
-						new TypeToken<List<Object>>() {}.getType(), 
+						LIST_OBJECT_TYPE,
+						objAdapter
+				)
+				.registerTypeAdapter(
+						LIST_MAP_STRING_OBJECT_TYPE,
 						objAdapter
 				)
 				.registerTypeAdapter(
@@ -243,7 +252,7 @@ public class GsonUtils {
 			return src;
 		}
 		JsonReader reader = new JsonReader(new StringReader(src));
-		reader.setLenient(true);
+		reader.setStrictness(Strictness.LENIENT);
 		JsonElement jsonEl = JsonParser.parseReader(reader);
 		return toPrettyJson(jsonEl);
 
@@ -333,7 +342,7 @@ public class GsonUtils {
 
 	public Map<String, Object> toMapWithException(String json) throws GsonSyntaxException {
 		try {
-			return fromJsonWithException(json, new TypeFactory(Map.class, String.class, Object.class));
+			return fromJsonWithException(json, MAP_STRING_OBJECT_TYPE);
 		} catch(Exception ex) {
 			throw new GsonSyntaxException(ex);
 		}
@@ -341,7 +350,7 @@ public class GsonUtils {
 
 	public Map<String, Object> toMapWithException(JsonElement json) throws GsonSyntaxException {
 		try {
-			return fromJsonWithException(json, new TypeFactory(Map.class, String.class, Object.class));
+			return fromJsonWithException(json, MAP_STRING_OBJECT_TYPE);
 		} catch(Exception ex) {
 			throw new GsonSyntaxException(ex);
 		}
@@ -381,7 +390,7 @@ public class GsonUtils {
 
 	public List<Map<String, Object>> toListMapWithException(String json)  throws GsonSyntaxException {
 		try {
-			return fromJsonWithException(json, new TypeToken<List<Map<String, Object>>>() {}.getType());
+			return fromJsonWithException(json, LIST_MAP_STRING_OBJECT_TYPE);
 		} catch(Exception ex) {
 			throw new GsonSyntaxException(ex);
 		}
@@ -389,7 +398,7 @@ public class GsonUtils {
 
 	public List<Map<String, Object>> toListMapWithException(JsonElement json)  throws GsonSyntaxException {
 		try {
-			return fromJsonWithException(json, new TypeToken<List<Map<String, Object>>>() {}.getType());
+			return fromJsonWithException(json, LIST_MAP_STRING_OBJECT_TYPE);
 		} catch(Exception ex) {
 			throw new GsonSyntaxException(ex);
 		}
@@ -630,8 +639,9 @@ public class GsonUtils {
 				 * 流程（规则）:
 				 * 1.先读取字符串，并转为为double类型
 				 * 2.如果字符串包含小数点,则直接返回double类型
-				 * 3.如果数值大于Long型的最大值，则返回double类型
-				 * 4.其余情况均返回Long型
+				 * 3.如果数值在int范围内，则返回int类型
+				 * 4.如果数值在long范围内，则返回long类型
+				 * 5.其余情况均返回double类型
 				 */
 				String temp = in.nextString();
 				
@@ -639,12 +649,18 @@ public class GsonUtils {
 				if(temp.contains(".")) {
 					return dbNum;
 				}
-				
-				// 数字超过long的最大值，返回浮点类型
-				if (dbNum > Long.MAX_VALUE) {
-					return dbNum;
+
+				// 数值在int范围内，返回int类型
+				if (dbNum <= Integer.MAX_VALUE && dbNum >= Integer.MIN_VALUE) {
+					return (int) dbNum;
 				}
-				return Long.parseLong(temp);
+
+				// 数值在long范围内，返回long类型
+				if (dbNum <= Long.MAX_VALUE && dbNum >= Long.MIN_VALUE) {
+					return (long) dbNum;
+				}
+
+				return dbNum;
 			case BOOLEAN:
 				return in.nextBoolean();
 
